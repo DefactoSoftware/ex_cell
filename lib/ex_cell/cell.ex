@@ -96,7 +96,9 @@ defmodule ExCell.Cell do
 
         options = Keyword.put(options, :class, class_name)
 
-        apply(cell_adapter(), :container, [name(), params(params), options, content])
+        apply(cell_adapter(),
+              :container,
+              [name(), params(params), options, content])
       end
 
       defoverridable [name: 0, params: 0, class_name: 0]
