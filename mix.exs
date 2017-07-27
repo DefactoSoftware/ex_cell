@@ -37,8 +37,8 @@ defmodule ExCell.Mixfile do
 
   defp deps do
     [
-      {:phoenix_html, "~> 2.6"},
-      {:poison, "~> 2.0"},
+      {:phoenix_html, "~> 2.10"},
+      {:poison, "~> 3.1"},
       {:credo, "~> 0.8", only: [:dev, :test], runtime: false}
     ]
   end
