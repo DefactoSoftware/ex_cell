@@ -6,6 +6,7 @@ defmodule ExCell.Mixfile do
   def project do
     [app: :ex_cell,
      name: "ExCell",
+     source_url: "https://github.com/defactosoftware/ex_cell",
      version: @version,
      elixir: "~> 1.2",
      build_per_environment: false,
@@ -14,23 +15,24 @@ defmodule ExCell.Mixfile do
      deps: deps()]
   end
 
-  def description do
+  def application do
+    []
+  end
+
+  defp description do
   """
   A module for creating coupled modules of CSS, Javascript and Views in
   Phoenix.
   """
   end
 
-  def package do
+  defp package do
     [
+      name: :ex_cell,
       maintainers: ["Jesse Dijkstra"],
       licenses: ["MIT"],
       links: %{"GitHub" => "https://github.com/defactosoftware/ex_cell"}
     ]
-  end
-
-  def application do
-    []
   end
 
   defp deps do
