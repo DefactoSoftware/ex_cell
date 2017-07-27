@@ -13,7 +13,15 @@ jobs:
       - run: mix local.hex --force
       - run: mix local.rebar --force
       - checkout
+      - restore_cache:
+          keys:
+            - v1-mix-deps-{{ checksum "mix.lock" }}
       - run: mix deps.get
       - run: mix compile
       - run: mix test
       - run: mix credo --strict
+      - save_cache:
+          key: v1-mix-deps-{{ checksum "mix.lock" }}
+          paths:
+            - "deps"
+            - "_build"
