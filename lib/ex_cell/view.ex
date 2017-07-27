@@ -43,10 +43,10 @@ defmodule ExCell.View do
   end
 
   defp render_cell(cell, assigns) do
-    apply(cell.adapter, :render, [cell, "template.html", assigns])
+    apply(cell.view_adapter, :render, [cell, "template.html", assigns])
   end
 
   defp render_cell_to_string(cell, assigns) do
-    apply(cell.adapter, :render_to_string, [cell, "template.html", assigns])
+    apply(cell.view_adapter, :render_to_string, [cell, "template.html", assigns])
   end
 end

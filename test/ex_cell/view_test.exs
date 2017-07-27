@@ -14,7 +14,7 @@ defmodule ExCell.ViewTest do
     @moduledoc """
     Mock Test ExCell that defines the adapter
     """
-    def adapter, do: MockViewAdapter
+    def view_adapter, do: MockViewAdapter
   end
 
   test "cell/1 with ExCell" do
