@@ -1,3 +1,6 @@
+[![Hex.pm](https://img.shields.io/hexpm/v/ex_cell.svg)](https://hex.pm/packages/ex_cell)
+[![CircleCI](https://circleci.com/gh/DefactoSoftware/ex_cell/tree/master.svg?style=shield)](https://circleci.com/gh/DefactoSoftware/ex_cell)
+
 # ex_cell
 A module for creating coupled modules of CSS, Javascript and Views in Phoenix
 
