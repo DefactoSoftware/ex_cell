@@ -4,20 +4,11 @@ defmodule ExCell.Controller do
   """
   alias ExCell.Controller
 
-  defmacro __using__(opts \\ []) do
-    quote do
-      def cell(conn, cell, assigns \\ []) do
-        Controller.cell(
-          unquote(opts[:adapter]),
-          conn,
-          cell,
-          assigns
-        )
-      end
-    end
+  defmacrop controller_adapter do
+    ExCell.config(:controller_adapter, Phoenix.Controller)
   end
 
-  def cell(adapter, conn, cell, assigns \\ []) do
-    adapter.render(conn, cell, "template.html", assigns)
+  def cell(conn, cell, assigns \\ []) do
+    controller_adapter().render(conn, cell, "template.html", assigns)
   end
 end

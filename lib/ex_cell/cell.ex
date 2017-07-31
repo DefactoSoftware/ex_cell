@@ -3,7 +3,6 @@ defmodule ExCell.Cell do
   Cell methods that can be overridden
   """
   alias Phoenix.HTML.Tag
-  alias ExCell.Cell
 
   @doc false
   def name(module, namespace) do
@@ -53,15 +52,14 @@ defmodule ExCell.Cell do
     quote do
       import ExCell.View
 
-      def name, do: apply(cell_adapter(), :name, [__MODULE__, unquote(opts[:namespace])])
+      def name do
+        cell_adapter().name(__MODULE__, unquote(opts[:namespace]))
+      end
 
       def class_name, do: name()
 
       def params, do: %{}
       def params(values), do: Map.merge(params(), values)
-
-      def view_adapter, do: unquote(opts[:adapter])
-      def cell_adapter, do: unquote(opts[:cell_adapter] || Cell)
 
       def container do
         container(%{}, [], [do: nil])
@@ -88,18 +86,15 @@ defmodule ExCell.Cell do
       end
 
       def container(%{} = params, options, [do: content]) when is_list(options) do
-        class_name = apply(
-          cell_adapter(),
-          :class_name,
-          [[class_name(), options[:class]]]
-        )
+        class_name = [class_name(), options[:class]]
+                     |> cell_adapter().class_name()
 
         options = Keyword.put(options, :class, class_name)
 
-        apply(cell_adapter(),
-              :container,
-              [name(), params(params), options, content])
+        cell_adapter().container(name(), params(params), options, content)
       end
+
+      defp cell_adapter, do: unquote(ExCell.config(:cell_adapter))
 
       defoverridable [name: 0, params: 0, class_name: 0]
     end

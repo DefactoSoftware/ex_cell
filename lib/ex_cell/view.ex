@@ -2,13 +2,7 @@ defmodule ExCell.View do
   @moduledoc """
   Cell helpers used to render the cells in both Views and Cells
   """
-  def relative_path(module, namespace) do
-    module
-    |> ExCell.module_relative_to(namespace)
-    |> Enum.map(&Macro.underscore/1)
-    |> Enum.join("/")
-    |> String.replace_suffix("_cell", "")
-  end
+  defmacrop view_adapter, do: ExCell.config(:view_adapter, Phoenix.View)
 
   def cell(cell) do
     render_cell(cell, [])
@@ -43,10 +37,10 @@ defmodule ExCell.View do
   end
 
   defp render_cell(cell, assigns) do
-    apply(cell.view_adapter, :render, [cell, "template.html", assigns])
+    view_adapter().render(cell, "template.html", assigns)
   end
 
   defp render_cell_to_string(cell, assigns) do
-    apply(cell.view_adapter, :render_to_string, [cell, "template.html", assigns])
+    view_adapter().render_to_string(cell, "template.html", assigns)
   end
 end

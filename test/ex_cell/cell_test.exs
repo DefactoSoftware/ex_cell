@@ -77,34 +77,16 @@ defmodule ExCell.CellTest do
   end
 
   describe "__using__" do
-    defmodule MockViewAdapter do
-      def render(cell, template, args), do: [cell, template, args]
-      def render_to_string(cell, template, args), do: [cell, template, args]
-    end
-
-    defmodule MockCellAdapter do
-      def name(module, namespace), do: Cell.name(module, namespace)
-      def class_name(classes), do: Cell.class_name(classes)
-      def container(name, params \\ %{}, options \\ [], content \\ nil) do
-        [name, params, options, content]
-      end
-    end
-
     defmodule MockCell do
-      use Cell, adapter: MockViewAdapter,
-                cell_adapter: MockCellAdapter,
-                namespace: ExCell.CellTest
+      use Cell, namespace: ExCell.CellTest
     end
 
     defmodule MockCellWithoutNamespace do
-      use Cell, adapter: MockViewAdapter,
-                cell_adapter: MockCellAdapter
+      use Cell
     end
 
     defmodule MockCellWithOverrideables do
-      use Cell, adapter: MockViewAdapter,
-                cell_adapter: MockCellAdapter,
-                namespace: ExCell.CellTest
+      use Cell, namespace: ExCell.CellTest
 
       def name do
         "HelloWorld"
