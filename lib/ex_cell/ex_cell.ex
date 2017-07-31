@@ -9,7 +9,8 @@ defmodule ExCell do
   end
 
   def config(keyword, fallback \\ nil) do
-    Application.fetch_env!(:ex_cell, __MODULE__)
+    :ex_cell
+    |> Application.fetch_env!(__MODULE__)
     |> Keyword.get(keyword, fallback)
   end
 end
