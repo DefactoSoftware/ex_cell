@@ -1,3 +1,9 @@
+# v0.0.5
+
+## Changed
+- Cell module didn't use a fallback adapter for the `__using__` macro (#16)
+- Added back the View.relative_path method (#15)
+
 # v0.0.4
 
 ## Changed
