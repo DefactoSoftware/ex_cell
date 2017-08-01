@@ -9,6 +9,7 @@ defmodule ExCell.Mixfile do
      source_url: "https://github.com/defactosoftware/ex_cell",
      version: @version,
      elixir: "~> 1.2",
+     elixirc_paths: elixirc_paths(Mix.env),
      build_per_environment: false,
      description: description(),
      package: package(),
@@ -25,6 +26,9 @@ defmodule ExCell.Mixfile do
   Phoenix.
   """
   end
+
+  defp elixirc_paths(:test), do: ["lib", "test/support"]
+  defp elixirc_paths(_), do: ["lib"]
 
   defp package do
     [

@@ -11,7 +11,7 @@ add the following to the dependencies in `mix.exs`
 {:ex_cell, "~> 0.0.2"}
 ```
 
-In Phoenix 1.3.0+ add the following to `lib/app_web/web.ex`
+In Phoenix 1.3.0+ add the following to `lib/app_web/web.ex`:
 
 ```ex
 
@@ -19,7 +19,7 @@ def controller do
   quote do
   ...
 
-  use ExCell.Controller, adapter: Phoenix.Controller
+  import ExCell.Controller
 
   ...
   end
@@ -37,8 +37,7 @@ end
 
 def cell(opts \\ []) do
   quote do
-    use ExCell.Cell, namespace: unquote(opts[:namespace]) || AppWeb,
-                     adapter: Phoenix.View
+    use ExCell.Cell, namespace: unquote(opts[:namespace]) || AppWeb
 
     use Phoenix.View, root: unquote(opts[:root]) || "lib/app_web/cells",
                       path: __MODULE__

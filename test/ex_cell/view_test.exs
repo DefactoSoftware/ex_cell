@@ -1,14 +1,7 @@
 defmodule ExCell.ViewTest do
   use ExUnit.Case
   alias ExCell.View
-
-  defmodule MockViewAdapter do
-    @moduledoc """
-    Mock Phoenix View
-    """
-    def render(cell, template, args), do: [cell, template, args]
-    def render_to_string(cell, template, args), do: [cell, template, args]
-  end
+  alias ExCell.Test.MockViewAdapter
 
   defmodule MockCell do
     @moduledoc """

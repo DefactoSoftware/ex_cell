@@ -7,4 +7,10 @@ defmodule ExCell do
     |> Module.split
     |> Kernel.--(Module.split(relative_to))
   end
+
+  def config(keyword, fallback \\ nil) do
+    :ex_cell
+    |> Application.fetch_env!(__MODULE__)
+    |> Keyword.get(keyword, fallback)
+  end
 end
