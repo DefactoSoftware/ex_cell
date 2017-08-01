@@ -10,7 +10,7 @@ defmodule ExCell do
 
   def config(keyword, fallback \\ nil) do
     :ex_cell
-    |> Application.fetch_env!(__MODULE__)
+    |> Application.get_env(__MODULE__, [])
     |> Keyword.get(keyword, fallback)
   end
 end
