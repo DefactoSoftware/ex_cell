@@ -10,6 +10,10 @@ defmodule ExCell.ViewTest do
     def view_adapter, do: MockViewAdapter
   end
 
+  test "relative_path/2" do
+    assert View.relative_path(ExCell.Test.MockViewAdapter, ExCell) == "test/mock_view_adapter"
+  end
+
   test "cell/1 with ExCell" do
     assert View.cell(MockCell) === [MockCell, "template.html", []]
   end

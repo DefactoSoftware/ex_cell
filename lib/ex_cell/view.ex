@@ -4,6 +4,14 @@ defmodule ExCell.View do
   """
   defmacrop view_adapter, do: ExCell.config(:view_adapter, Phoenix.View)
 
+  def relative_path(module, namespace) do
+    module
+    |> ExCell.module_relative_to(namespace)
+    |> Enum.map(&Macro.underscore/1)
+    |> Enum.join("/")
+    |> String.replace_suffix("_cell", "")
+  end
+
   def cell(cell) do
     render_cell(cell, [])
   end
