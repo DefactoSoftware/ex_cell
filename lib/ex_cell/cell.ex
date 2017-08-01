@@ -3,6 +3,7 @@ defmodule ExCell.Cell do
   Cell methods that can be overridden
   """
   alias Phoenix.HTML.Tag
+  alias ExCell.Cell
 
   @doc false
   def name(module, namespace) do
@@ -94,7 +95,7 @@ defmodule ExCell.Cell do
         cell_adapter().container(name(), params(params), options, content)
       end
 
-      defp cell_adapter, do: unquote(ExCell.config(:cell_adapter))
+      defp cell_adapter, do: unquote(ExCell.config(:cell_adapter, Cell))
 
       defoverridable [name: 0, params: 0, class_name: 0]
     end
