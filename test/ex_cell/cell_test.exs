@@ -5,206 +5,103 @@ defmodule ExCell.CellTest do
   alias ExCell.Cell
   alias Phoenix.HTML.Tag
 
-  describe "name/2" do
-    defmodule Foo.MockCell do
-    end
+  defmodule Foo.MockCell do
+    use Cell, namespace: Foo
+  end
 
-    defmodule Foo.Bar.MockCell do
-    end
+  defmodule Foo.Bar.MockCell do
+    use Cell, namespace: Foo
+  end
 
+  defmodule Foo.MockCellWithOverridables do
+    use Cell, namespace: Foo
+
+    def params, do: %{foo: "Bar"}
+    def class_name, do: "FooBar"
+  end
+
+  alias Foo.Bar
+  alias Foo.MockCell
+  alias Foo.MockCellWithOverridables
+
+  describe "name/0" do
     test "returns the relative module name" do
-      assert Cell.name(Foo.MockCell, Foo) == "MockCell"
+      assert MockCell.name() == "MockCell"
     end
 
     test "returns the relative module name with dashes for nested cells" do
-      assert Cell.name(Foo.Bar.MockCell, Foo) == "Bar-MockCell"
+      assert Bar.MockCell.name() == "Bar-MockCell"
     end
   end
 
-  describe "container/4" do
+  describe "container/3" do
     test "defaults to a :div as tag" do
-      assert safe_to_string(Cell.container("MockCell"))
-        == "<div data-cell=\"MockCell\" data-cell-params=\"{}\">"
+      assert safe_to_string(MockCell.container())
+        == "<div class=\"MockCell\" data-cell=\"MockCell\" data-cell-params=\"{}\">"
     end
 
     test "custom tag" do
-      assert safe_to_string(Cell.container("MockCell", %{}, [tag: :p]))
-        == "<p data-cell=\"MockCell\" data-cell-params=\"{}\">"
+      assert safe_to_string(MockCell.container(%{}, tag: :p))
+        == "<p class=\"MockCell\" data-cell=\"MockCell\" data-cell-params=\"{}\">"
     end
 
     test "content" do
-      assert safe_to_string(Cell.container("MockCell", %{}, [], "TestContent"))
-        == "<div data-cell=\"MockCell\" data-cell-params=\"{}\">TestContent</div>"
+      assert safe_to_string(MockCell.container(%{}, [], do: "TestContent"))
+        == "<div class=\"MockCell\" data-cell=\"MockCell\" data-cell-params=\"{}\">TestContent</div>"
     end
 
     test "unsafe content" do
       assert safe_to_string(
-        Cell.container("MockCell", %{}, [], Tag.content_tag(:div, "TestContent"))
-      ) == "<div data-cell=\"MockCell\" data-cell-params=\"{}\"><div>TestContent</div></div>"
+        MockCell.container(%{}, [], do: Tag.content_tag(:div, "TestContent"))
+      ) == "<div class=\"MockCell\" data-cell=\"MockCell\" data-cell-params=\"{}\"><div>TestContent</div></div>"
     end
 
     test "cell params" do
       assert safe_to_string(
-        Cell.container("MockCell", %{ foo: "bar" })
-      ) == "<div data-cell=\"MockCell\" data-cell-params=\"{&quot;foo&quot;:&quot;bar&quot;}\">"
+        MockCell.container(%{ foo: "bar" })
+      ) == "<div class=\"MockCell\" data-cell=\"MockCell\" data-cell-params=\"{&quot;foo&quot;:&quot;bar&quot;}\">"
     end
 
     test "attributes" do
       assert safe_to_string(
-        Cell.container("MockCell", %{}, foo: "bar")
-      ) == "<div data-cell=\"MockCell\" data-cell-params=\"{}\" foo=\"bar\">"
+        MockCell.container(%{}, foo: "bar")
+      ) == "<div class=\"MockCell\" data-cell=\"MockCell\" data-cell-params=\"{}\" foo=\"bar\">"
     end
 
     test "data attributes" do
       assert safe_to_string(
-        Cell.container("MockCell", %{}, data: [foo: "bar"])
-      ) == "<div data-cell=\"MockCell\" data-cell-params=\"{}\" data-foo=\"bar\">"
+        MockCell.container(%{}, data: [foo: "bar"])
+      ) == "<div class=\"MockCell\" data-cell=\"MockCell\" data-cell-params=\"{}\" data-foo=\"bar\">"
     end
   end
 
-  describe "class_name/1" do
-    test "joins multiple class names" do
-      assert Cell.class_name(["foo", "bar"]) == "foo bar"
-    end
-
-    test "joins nested class names" do
-      assert Cell.class_name(["foo", ["bar", "moo"]]) == "foo bar moo"
-    end
-
-    test "removes nill values" do
-      assert Cell.class_name(["foo", nil]) == "foo"
-    end
-  end
-
-  describe "__using__" do
-    defmodule MockCell do
-      use Cell, namespace: ExCell.CellTest
-    end
-
-    defmodule MockCellWithoutNamespace do
-      use Cell
-    end
-
-    defmodule MockCellWithOverrideables do
-      use Cell, namespace: ExCell.CellTest
-
-      def name do
-        "HelloWorld"
-      end
-
-      def class_name do
-        "FooBar"
-      end
-
-      def params do
-        %{ foo: "Bar" }
-      end
-    end
-
-    test "name()" do
-      assert MockCell.name == "MockCell"
-    end
-
-    test "name() without namespace" do
-      assert MockCellWithoutNamespace.name
-        == "ExCell-CellTest-MockCellWithoutNamespace"
-    end
-
-    test "name() is overrideable" do
-      assert MockCellWithOverrideables.name
-        == "HelloWorld"
-    end
-
+  describe "class_name/0" do
     test "class_name()" do
       assert MockCell.class_name == "MockCell"
     end
 
-    test "class_name() without namespace" do
-      assert MockCellWithoutNamespace.class_name
-        == "ExCell-CellTest-MockCellWithoutNamespace"
-    end
-
     test "class_name() is overrideable" do
-      assert MockCellWithOverrideables.class_name == "FooBar"
+      assert MockCellWithOverridables.class_name == "FooBar"
     end
+  end
 
-    test "container()" do
-      assert MockCell.container == [
-        "MockCell",
-        %{},
-        [class: "MockCell"],
-        nil
-      ]
-    end
-
-    test "container([do: content])" do
-      assert MockCell.container(do: "Foo") == [
-        "MockCell",
-        %{},
-        [class: "MockCell"],
-        "Foo"
-      ]
-    end
-
-    test "container(options) when is_list(options)" do
-      assert MockCell.container(foo: "Bar") == [
-        "MockCell",
-        %{},
-        [class: "MockCell", foo: "Bar"],
-        nil
-      ]
-    end
-
-    test "container(%{} = params)" do
-      assert MockCell.container(%{foo: "Bar"}) == [
-        "MockCell",
-        %{foo: "Bar"},
-        [class: "MockCell"],
-        nil
-      ]
-    end
-
-    test "container(options, [do: content]) when is_list(options)" do
-      assert MockCell.container([foo: "Bar"], do: "Moo") == [
-        "MockCell",
-        %{},
-        [class: "MockCell", foo: "Bar"],
-        "Moo"
-      ]
-    end
-
-    test "container(%{} = params, [do: content])" do
-      assert MockCell.container(%{ foo: "Bar" }, do: "Moo") == [
-        "MockCell",
-        %{foo: "Bar"},
-        [class: "MockCell"],
-        "Moo"
-      ]
-    end
-
-    test "container(%{} = params, options, [do: content]) when is_list(options)" do
-      assert MockCell.container(%{ foo: "Bar" }, [hello: "World"], do: "Moo") == [
-        "MockCell",
-        %{foo: "Bar"},
-        [class: "MockCell", hello: "World"],
-        "Moo"
-      ]
-    end
-
+  describe "params/0" do
     test "params()" do
-      assert MockCell.params == %{}
+      assert MockCell.params() == %{}
     end
 
     test "params() with overrideables" do
-      assert MockCellWithOverrideables.params() == %{foo: "Bar"}
+      assert MockCellWithOverridables.params() == %{foo: "Bar"}
     end
+  end
 
+  describe "params/1" do
     test "params(values)" do
       assert MockCell.params(%{ hello: "World" }) == %{hello: "World"}
     end
 
     test "params(values) with overrideables" do
-      assert MockCellWithOverrideables.params(%{hello: "World"})
+      assert MockCellWithOverridables.params(%{hello: "World"})
         == %{foo: "Bar", hello: "World"}
     end
   end
