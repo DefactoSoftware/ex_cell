@@ -3,101 +3,78 @@ defmodule ExCell.Cell do
   Cell methods that can be overridden
   """
   alias Phoenix.HTML.Tag
-  alias ExCell.Cell
-
-  @doc false
-  def name(module, namespace) do
-    parts = case namespace do
-      nil -> Module.split(module)
-      _ -> ExCell.module_relative_to(module, namespace)
-    end
-
-    Enum.join(parts, "-")
-  end
-
-  @doc false
-  def container(name, params \\ %{}, options \\ [], content \\ nil) do
-    {tag, options} = Keyword.pop(options, :tag, :div)
-
-    attributes = attributes(name, options, params)
-
-    case content do
-      nil -> Tag.tag(tag, attributes)
-      _ -> Tag.content_tag(tag, content, attributes)
-    end
-  end
-
-  @doc false
-  def class_name(classes) when is_list(classes) do
-    classes
-    |> List.flatten
-    |> Enum.reject(&is_nil/1)
-    |> Enum.join(" ")
-  end
-
-  @doc false
-  defp attributes(name, options, params) do
-    {data, options} = Keyword.pop(options, :data)
-
-    data = Enum.concat(
-      (data || []),
-      [cell: name, cell_params: Poison.encode!(params)]
-    )
-
-    options
-    |> Keyword.put(:data, data)
-    |> Enum.reject(&is_nil/1)
-  end
 
   defmacro __using__(opts \\ []) do
     quote do
       import ExCell.View
 
-      @cell_adapter unquote(ExCell.config(:cell_adapter, Cell))
-      @cell_namespace unquote(opts[:namespace])
-      @cell_name Cell.name(__MODULE__, @cell_namespace)
+      @namespace unquote(opts[:namespace])
 
-      def name, do: @cell_name
+      def name, do: relative_name()
+      def class_name, do: name()
+      def params, do: %{}
 
-      def class_name, do: @cell_name
+      def container, do: container(%{}, [], [do: nil])
+      def container([do: content]), do: container(%{}, [], [do: content])
 
+      def container(options) when is_list(options), do: container(%{}, options, [do: nil])
+      def container(options, [do: content]) when is_list(options), do: container(%{}, options, [do: content])
+
+      def container(%{} = params), do: container(params, [], [do: nil])
+      def container(%{} = params, [do: content]), do: container(params, [], [do: content])
+      def container(%{} = params, options) when is_list(options), do: container(params, options, [do: nil])
+      def container(%{} = params, options, [do: content]) when is_list(options), do: do_container(params, options, content)
+
+      @doc """
+      Documentation
+      """
       def params, do: %{}
       def params(values), do: Map.merge(params(), values)
 
-      def container do
-        container(%{}, [], [do: nil])
+      def class_name(classes) do
+        [class_name()] ++ [classes]
+        |> List.flatten
+        |> Enum.reject(&is_nil/1)
+        |> Enum.join(" ")
       end
 
-      def container([do: content]) do
-        container(%{}, [], [do: content])
+      defp relative_name do
+        parts = case @namespace do
+          nil -> Module.split(__MODULE__)
+          _ -> ExCell.module_relative_to(__MODULE__, @namespace)
+        end
+
+        Enum.join(parts, "-")
       end
 
-      def container(options) when is_list(options) do
-        container(%{}, options, [do: nil])
-      end
+      defp do_container(params \\ %{}, options \\ [], content \\ nil) do
+        {tag, options} = Keyword.pop(options, :tag, :div)
 
-      def container(%{} = params) do
-        container(params, [], [do: nil])
-      end
-
-      def container(options, [do: content]) when is_list(options) do
-        container(%{}, options, [do: content])
-      end
-
-      def container(%{} = params, [do: content]) do
-        container(params, [], [do: content])
-      end
-
-      def container(%{} = params, options, [do: content]) when is_list(options) do
-        class_name = [class_name(), options[:class]]
-                     |> @cell_adapter.class_name()
-
+        class_name = class_name(options[:class])
         options = Keyword.put(options, :class, class_name)
 
-        @cell_adapter.container(@cell_name, params(params), options, content)
+        attributes = attributes(name(), options, params(params))
+
+        case content do
+          nil -> Tag.tag(tag, attributes)
+          _ -> Tag.content_tag(tag, content, attributes)
+        end
       end
 
-      defoverridable [name: 0, params: 0, class_name: 0]
+      defp attributes(name, options, params) do
+        {data, options} = Keyword.pop(options, :data)
+
+        data = Enum.concat(
+          (data || []),
+          [cell: name, cell_params: Poison.encode!(params)]
+        )
+
+        options
+        |> Keyword.put(:data, data)
+        |> Enum.reject(&is_nil/1)
+      end
+
+      defoverridable [name: 0, class_name: 0, params: 0]
     end
   end
 end

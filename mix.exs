@@ -45,6 +45,7 @@ defmodule ExCell.Mixfile do
       {:ex_doc, ">= 0.0.0", only: [:dev, :test]},
       {:phoenix_html, "~> 2.10"},
       {:poison, "~> 3.1"},
+      {:mix_test_watch, "~> 0.3", only: :dev, runtime: false},
       {:credo, "~> 0.8", only: [:dev, :test], runtime: false}
     ]
   end
