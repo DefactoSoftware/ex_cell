@@ -85,20 +85,6 @@ defmodule ExCell.CellTest do
     end
   end
 
-  describe "class_name/1" do
-    test "joins multiple class names" do
-      assert MockCell.class_name(["foo", "bar"]) == "MockCell foo bar"
-    end
-
-    test "joins nested class names" do
-      assert MockCell.class_name(["foo", ["bar", "moo"]]) == "MockCell foo bar moo"
-    end
-
-    test "removes nill values" do
-      assert MockCell.class_name(["foo", nil]) == "MockCell foo"
-    end
-  end
-
   describe "params/0" do
     test "params()" do
       assert MockCell.params() == %{}
