@@ -2,8 +2,6 @@ defmodule ExCell.Controller do
   @moduledoc """
   Cell methods that render a cell directly to a controller
   """
-  alias ExCell.Controller
-
   defmacrop controller_adapter do
     ExCell.config(:controller_adapter, Phoenix.Controller)
   end
