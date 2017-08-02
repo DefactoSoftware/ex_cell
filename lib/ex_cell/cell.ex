@@ -53,11 +53,13 @@ defmodule ExCell.Cell do
     quote do
       import ExCell.View
 
-      def name do
-        cell_adapter().name(__MODULE__, unquote(opts[:namespace]))
-      end
+      @cell_adapter unquote(ExCell.config(:cell_adapter, Cell))
+      @cell_namespace unquote(opts[:namespace])
+      @cell_name Cell.name(__MODULE__, @cell_namespace)
 
-      def class_name, do: name()
+      def name, do: @cell_name
+
+      def class_name, do: @cell_name
 
       def params, do: %{}
       def params(values), do: Map.merge(params(), values)
@@ -88,14 +90,12 @@ defmodule ExCell.Cell do
 
       def container(%{} = params, options, [do: content]) when is_list(options) do
         class_name = [class_name(), options[:class]]
-                     |> cell_adapter().class_name()
+                     |> @cell_adapter.class_name()
 
         options = Keyword.put(options, :class, class_name)
 
-        cell_adapter().container(name(), params(params), options, content)
+        @cell_adapter.container(@cell_name, params(params), options, content)
       end
-
-      defp cell_adapter, do: unquote(ExCell.config(:cell_adapter, Cell))
 
       defoverridable [name: 0, params: 0, class_name: 0]
     end
