@@ -1,4 +1,7 @@
 defmodule ExCell.Cell do
+  @moduledoc """
+  ExCell.Cell documentation
+  """
   alias ExCell.Base
   alias ExCell.Cell
 
