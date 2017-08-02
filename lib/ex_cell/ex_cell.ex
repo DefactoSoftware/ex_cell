@@ -1,7 +1,6 @@
 defmodule ExCell do
-  @moduledoc """
-  Generic ExCell methods
-  """
+  @moduledoc false
+
   def module_relative_to(module, relative_to) do
     module
     |> Module.split
