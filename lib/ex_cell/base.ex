@@ -1,7 +1,6 @@
 defmodule ExCell.Base do
   @moduledoc false
   alias Phoenix.HTML.Tag
-  alias ExCell.Base
 
   defmacro __using__(opts \\ []) do
     quote do
