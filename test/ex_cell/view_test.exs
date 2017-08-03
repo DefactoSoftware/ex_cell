@@ -11,7 +11,7 @@ defmodule ExCell.ViewTest do
   end
 
   test "relative_path/2" do
-    assert View.relative_path(ExCell.Test.MockViewAdapter, ExCell) == "test/mock_view_adapter"
+    assert View.relative_path(ExCell.Test.MockViewAdapterCell, ExCell) == "test/mock_view_adapter"
   end
 
   test "cell/1 with ExCell" do
