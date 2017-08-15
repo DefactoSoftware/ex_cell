@@ -1,3 +1,10 @@
+# v0.0.7
+## Changed
+- Added a cell render method to ExCell.Controller to directly render cells as a view (#23)
+
+## Fixed
+- Removed unused Base alias in `lib/ex_cell/base.ex` (#22)
+
 # v0.0.6
 
 ## Changed
