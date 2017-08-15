@@ -1,4 +1,6 @@
 defmodule ExCell.Controller do
+  alias ExCell.View
+
   @moduledoc """
   Cell methods that render a cell directly to a controller
   """
@@ -20,7 +22,20 @@ defmodule ExCell.Controller do
         end
       end
   """
-  def cell(conn, cell, assigns \\ []) do
+
+  def cell(cell) do
+    cell(cell, [])
+  end
+
+  def cell(%{} = conn, cell) do
+    cell(conn, cell, [])
+  end
+
+  def cell(cell, assigns) do
+    View.cell(cell, assigns)
+  end
+
+  def cell(%{} = conn, cell, assigns) do
     controller_adapter().render(conn, cell, "template.html", assigns)
   end
 end
