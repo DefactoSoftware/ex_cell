@@ -1,4 +1,6 @@
 defmodule ExCell.Controller do
+  alias ExCell.View
+
   @moduledoc """
   Cell methods that render a cell directly to a controller
   """
@@ -30,7 +32,7 @@ defmodule ExCell.Controller do
   end
 
   def cell(cell, assigns) do
-    ExCell.View.cell(cell, assigns)
+    View.cell(cell, assigns)
   end
 
   def cell(%{} = conn, cell, assigns) do
