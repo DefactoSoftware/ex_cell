@@ -2,7 +2,7 @@ defmodule ExCell.View do
   @moduledoc """
   Cell helpers used to render the cells in both Views and Cells
   """
-  defmacrop view_adapter, do: ExCell.config(:view_adapter, Phoenix.View)
+  @view_adapter ExCell.config(:view_adapter, Phoenix.View)
 
   @doc """
   Returns the relative path of a module to the namespace. This method is used
@@ -95,10 +95,10 @@ defmodule ExCell.View do
   end
 
   defp render_cell(cell, assigns) do
-    view_adapter().render(cell, "template.html", assigns)
+    @view_adapter.render(cell, "template.html", assigns)
   end
 
   defp render_cell_to_string(cell, assigns) do
-    view_adapter().render_to_string(cell, "template.html", assigns)
+    @view_adapter.render_to_string(cell, "template.html", assigns)
   end
 end
