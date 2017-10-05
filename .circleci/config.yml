@@ -17,8 +17,9 @@ jobs:
           keys:
             - v1-mix-deps-{{ checksum "mix.lock" }}
       - run: mix deps.get
-      - run: mix compile
-      - run: mix test
+      - run: mix compile --warnings-as-errors
+      - run: mix coveralls.json
+      - run: bash <(curl -s https://codecov.io/bash) -t "$CODECOV_KEY"
       - run: mix credo --strict
       - save_cache:
           key: v1-mix-deps-{{ checksum "mix.lock" }}
