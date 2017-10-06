@@ -15,7 +15,8 @@ defmodule ExCell.Mixfile do
      package: package(),
      deps: deps(),
      test_coverage: [tool: ExCoveralls],
-     preferred_cli_env: [coveralls: :test]]
+     preferred_cli_env: [coveralls: :test],
+     dialyzer: [plt_add_deps: true]]
   end
 
   def application do
@@ -46,7 +47,9 @@ defmodule ExCell.Mixfile do
     [
       {:ex_doc, ">= 0.0.0", only: [:dev, :test]},
       {:excoveralls, "~> 0.7", only: :test},
+      {:dialyxir, "~> 0.5", only: [:dev, :test]},
       {:phoenix_html, "~> 2.10"},
+      {:phoenix, "~> 1.3.0", optional: true},
       {:poison, "~> 3.1"},
       {:mix_test_watch, "~> 0.3", only: :dev, runtime: false},
       {:credo, "~> 0.8", only: [:dev, :test], runtime: false}

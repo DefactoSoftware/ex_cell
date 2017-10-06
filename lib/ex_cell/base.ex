@@ -7,6 +7,7 @@ defmodule ExCell.Base do
       import ExCell.View
 
       @namespace unquote(opts[:namespace])
+      @dialyzer [{:no_match, relative_name: 2}]
 
       @doc """
       Returns the name of the module as a string. Module namespaces are replaced

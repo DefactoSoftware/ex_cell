@@ -4,9 +4,7 @@ defmodule ExCell.Controller do
   @moduledoc """
   Cell methods that render a cell directly to a controller
   """
-  defmacrop controller_adapter do
-    ExCell.config(:controller_adapter, Phoenix.Controller)
-  end
+  @controller_adapter ExCell.config(:controller_adapter, Phoenix.Controller)
 
   @doc """
   Renders a cell directly from a controller without having to use a view.
@@ -36,6 +34,6 @@ defmodule ExCell.Controller do
   end
 
   def cell(%{} = conn, cell, assigns) do
-    controller_adapter().render(conn, cell, "template.html", assigns)
+    @controller_adapter.render(conn, cell, "template.html", assigns)
   end
 end
