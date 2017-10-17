@@ -24,7 +24,9 @@ defmodule ExCell.Base do
       def name, do: relative_name(__MODULE__, @namespace)
 
       @doc """
-      Generates a CSS class name based on the cell name
+      Generates the CSS class name based on the cell name. Can be overriden
+      to pre- or postfix the class name or to create a distinct class name with
+      CSS modules.
 
       ## Examples
 
@@ -32,6 +34,17 @@ defmodule ExCell.Base do
           "AvatarCell"
       """
       def class_name, do: name()
+
+      @doc """
+      Generates the HTML attribute name based on the cell name. Can be overriden
+      to pre- or postfix the attribute name.
+
+      ## Examples
+
+          iex(0)> AvatarCell.attribute_name()
+          "AvatarCell"
+      """
+      def attribute_name, do: name()
 
       @doc false
       def params, do: %{}
@@ -121,7 +134,7 @@ defmodule ExCell.Base do
 
         options = Keyword.put(options, :class, class_name)
 
-        attributes = attributes(name(), options, params(params))
+        attributes = attributes(attribute_name(), options, params(params))
 
         case content do
           nil -> Tag.tag(tag, attributes)
@@ -142,7 +155,7 @@ defmodule ExCell.Base do
         |> Enum.reject(&is_nil/1)
       end
 
-      defoverridable [class_name: 0, params: 0]
+      defoverridable [class_name: 0, attribute_name: 0, params: 0]
     end
   end
 end
