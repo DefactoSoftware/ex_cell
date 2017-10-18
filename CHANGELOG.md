@@ -1,3 +1,8 @@
+# v0.0.8
+## Changed
+- Use Phoenix.content_tag instead of Phoenix.tag by default and add option to remove the closing tag by adding `closing_tag: false` to the options (#27)
+- The attribute name is now used to set the `data-cell` attribute and can be overridden to allow prefixing (#28)
+
 # v0.0.7
 ## Changed
 - Added a cell render method to ExCell.Controller to directly render cells as a view (#23)
