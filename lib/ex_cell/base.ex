@@ -2,12 +2,49 @@ defmodule ExCell.Base do
   @moduledoc false
   alias Phoenix.HTML.Tag
 
+  @dialyzer [{:no_match, relative_name: 2}]
+
+  def relative_name(module, namespace) do
+    parts = case namespace do
+      nil -> Module.split(module)
+      _ -> ExCell.module_relative_to(module, namespace)
+    end
+
+    Enum.join(parts, "-")
+  end
+
+  def attributes(attribute_name, class_name, options, params) do
+    {data, options} = Keyword.pop(options, :data)
+    {class, options} = Keyword.pop(options, :class)
+
+    options
+    |> Keyword.put(:data, data_attribute(attribute_name, data, params))
+    |> Keyword.put(:class, class_attribute(class_name, class))
+    |> Enum.reject(&is_nil/1)
+  end
+
+  def data_attribute(name, data \\ [], params \\ %{})
+  def data_attribute(name, data, params) when is_nil(data), do:
+    data_attribute(name, [], params)
+
+  def data_attribute(name, data, params) when is_list(data) do
+    data
+    |> Keyword.merge([cell: name, cell_params: Poison.encode!(params)])
+  end
+
+  def class_attribute(name, class) do
+    [name, class]
+    |> List.flatten
+    |> Enum.reject(&is_nil/1)
+    |> Enum.join(" ")
+  end
+
   defmacro __using__(opts \\ []) do
     quote do
       import ExCell.View
+      import ExCell.Base
 
       @namespace unquote(opts[:namespace])
-      @dialyzer [{:no_match, relative_name: 2}]
 
       @doc """
       Returns the name of the module as a string. Module namespaces are replaced
@@ -24,7 +61,9 @@ defmodule ExCell.Base do
       def name, do: relative_name(__MODULE__, @namespace)
 
       @doc """
-      Generates a CSS class name based on the cell name
+      Generates the CSS class name based on the cell name. Can be overriden
+      to pre- or postfix the class name or to create a distinct class name with
+      CSS modules.
 
       ## Examples
 
@@ -33,8 +72,32 @@ defmodule ExCell.Base do
       """
       def class_name, do: name()
 
+      @doc """
+      Generates the HTML attribute name based on the cell name. Can be overriden
+      to pre- or postfix the attribute name.
+
+      ## Examples
+
+          iex(0)> AvatarCell.attribute_name()
+          "AvatarCell"
+      """
+      def attribute_name, do: name()
+
       @doc false
       def params, do: %{}
+
+      @doc """
+      Combines the parameters set on the cell with custom parameters for a
+      specific instance
+
+      ## Examples
+
+          iex(0)> AvatarCell.params
+          %{hello: "world"}
+          iex(0)> AvatarCell.params(%{foo: "bar"})
+          %{hello: "world", foo: "bar"}
+      """
+      def params(values), do: Map.merge(params(), values)
 
       @doc """
       Returns the container of a cell as a Phoenix.Tag.
@@ -85,43 +148,24 @@ defmodule ExCell.Base do
           iex(1)> safe_to_string(AvatarCell.container(%{ foo: "bar" }))
           "<a class=\\"AvatarCell\\" data-cell=\\"AvatarCell\\" data-cell-params=\\"{&quot;foo&quot;:&quot;bar&quot;}">"
       """
-      def container(%{} = params), do: container(params, [], [do: nil])
-      def container(%{} = params, [do: content]), do: container(params, [], [do: content])
-      def container(%{} = params, options) when is_list(options), do: container(params, options, [do: nil])
-      def container(%{} = params, options, [do: content]) when is_list(options), do: do_container(params, options, content)
+      def container(%{} = params), do:
+        container(params, [], [do: nil])
+      def container(%{} = params, [do: content]), do:
+        container(params, [], [do: content])
+      def container(%{} = params, options) when is_list(options), do:
+        container(params, options, [do: nil])
+      def container(%{} = params, options, [do: content]) when is_list(options), do:
+        do_container(params, options, content)
 
-      @doc """
-      Combines the parameters set on the cell with custom parameters for a specific instance
-
-      ## Examples
-
-          iex(0)> AvatarCell.params
-          %{hello: "world"}
-          iex(0)> AvatarCell.params(%{foo: "bar"})
-          %{hello: "world", foo: "bar"}
-      """
-      def params(values), do: Map.merge(params(), values)
-
-      defp relative_name(module, namespace) do
-        parts = case namespace do
-          nil -> Module.split(module)
-          _ -> ExCell.module_relative_to(module, namespace)
-        end
-
-        Enum.join(parts, "-")
-      end
-
-      defp do_container(params \\ %{}, options \\ [], content \\ nil) do
+      defp do_container(params, options, content) do
         {tag, options} = Keyword.pop(options, :tag, :div)
 
-        class_name = [class_name()] ++ [options[:class]]
-                     |> List.flatten
-                     |> Enum.reject(&is_nil/1)
-                     |> Enum.join(" ")
-
-        options = Keyword.put(options, :class, class_name)
-
-        attributes = attributes(name(), options, params(params))
+        attributes = attributes(
+          attribute_name(),
+          class_name(),
+          options,
+          params(params)
+        )
 
         case content do
           nil -> Tag.tag(tag, attributes)
@@ -129,20 +173,7 @@ defmodule ExCell.Base do
         end
       end
 
-      defp attributes(name, options, params) do
-        {data, options} = Keyword.pop(options, :data)
-
-        data = Enum.concat(
-          (data || []),
-          [cell: name, cell_params: Poison.encode!(params)]
-        )
-
-        options
-        |> Keyword.put(:data, data)
-        |> Enum.reject(&is_nil/1)
-      end
-
-      defoverridable [class_name: 0, params: 0]
+      defoverridable [class_name: 0, attribute_name: 0, params: 0]
     end
   end
 end

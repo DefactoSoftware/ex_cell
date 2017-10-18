@@ -17,7 +17,8 @@ defmodule ExCell.CellTest do
     use Cell, namespace: Foo
 
     def params, do: %{foo: "Bar"}
-    def class_name, do: "FooBar"
+    def class_name, do: "Bar-" <> name()
+    def attribute_name, do: "World-" <> name()
   end
 
   alias Foo.Bar
@@ -38,6 +39,11 @@ defmodule ExCell.CellTest do
     test "defaults to a :div as tag" do
       assert safe_to_string(MockCell.container())
         == "<div class=\"MockCell\" data-cell=\"MockCell\" data-cell-params=\"{}\">"
+    end
+
+    test "overrideables" do
+      assert safe_to_string(MockCellWithOverridables.container())
+        == "<div class=\"Bar-MockCellWithOverridables\" data-cell=\"World-MockCellWithOverridables\" data-cell-params=\"{&quot;foo&quot;:&quot;Bar&quot;}\">"
     end
 
     test "custom tag" do
@@ -81,7 +87,17 @@ defmodule ExCell.CellTest do
     end
 
     test "class_name() is overrideable" do
-      assert MockCellWithOverridables.class_name == "FooBar"
+      assert MockCellWithOverridables.class_name == "Bar-MockCellWithOverridables"
+    end
+  end
+
+  describe "attribute_name/0" do
+    test "attribute_name()" do
+      assert MockCell.attribute_name == "MockCell"
+    end
+
+    test "attribute_name() is overrideable" do
+      assert MockCellWithOverridables.attribute_name == "World-MockCellWithOverridables"
     end
   end
 
