@@ -157,7 +157,7 @@ defmodule ExCell.Base do
       def container(%{} = params, options, [do: content]) when is_list(options), do:
         do_container(params, options, content)
 
-      def do_container(params \\ {}, options \\ [], content \\ nil) do
+      defp do_container(params, options, content) do
         {tag, options} = Keyword.pop(options, :tag, :div)
 
         attributes = attributes(
