@@ -35,6 +35,10 @@ defmodule ExCell.BaseTest do
   end
 
   describe "data_attribute/3" do
+    test "it defaults" do
+      assert Base.data_attribute(nil) == [cell: nil, cell_params: "{}"]
+    end
+
     test "it defaults data to a list" do
       assert Base.data_attribute(nil, nil, %{}) == [cell: nil, cell_params: "{}"]
     end
