@@ -23,9 +23,13 @@ defmodule ExCell.Base do
     |> Enum.reject(&is_nil/1)
   end
 
-  def data_attribute(name, data, params \\ %{}) do
-    (data || [])
-    |> Enum.concat([cell: name, cell_params: Poison.encode!(params)])
+  def data_attribute(name, data \\ [], params \\ %{})
+  def data_attribute(name, data, params) when is_nil(data), do:
+    data_attribute(name, [], params)
+
+  def data_attribute(name, data, params) when is_list(data) do
+    data
+    |> Keyword.merge([cell: name, cell_params: Poison.encode!(params)])
   end
 
   def class_attribute(name, class) do
