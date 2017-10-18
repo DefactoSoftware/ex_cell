@@ -29,7 +29,7 @@ defmodule ExCell.Base do
 
   def data_attribute(name, data, params) when is_list(data) do
     data
-    |> Keyword.merge([cell: name, cell_params: Poison.encode!(params)])
+    |> Keyword.merge(cell: name, cell_params: Poison.encode!(params))
   end
 
   def class_attribute(name, class) do
@@ -159,6 +159,7 @@ defmodule ExCell.Base do
 
       defp do_container(params, options, content) do
         {tag, options} = Keyword.pop(options, :tag, :div)
+        {closing_tag, options} = Keyword.pop(options, :closing_tag, true)
 
         attributes = attributes(
           attribute_name(),
@@ -167,8 +168,8 @@ defmodule ExCell.Base do
           params(params)
         )
 
-        case content do
-          nil -> Tag.tag(tag, attributes)
+        case closing_tag do
+          false -> Tag.tag(tag, attributes)
           _ -> Tag.content_tag(tag, content, attributes)
         end
       end
