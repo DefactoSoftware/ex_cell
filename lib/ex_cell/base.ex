@@ -1,6 +1,5 @@
 defmodule ExCell.Base do
   @moduledoc false
-  @adapter ExCell.Adapters.CellJS
   @dialyzer [{:no_match, relative_name: 2}]
 
   def relative_name(module, namespace) do
@@ -24,6 +23,7 @@ defmodule ExCell.Base do
       import ExCell.View
       import ExCell.Base
 
+      @adapter unquote(opts[:adapter] || ExCell.Adapters.CellJS)
       @namespace unquote(opts[:namespace])
 
       @doc """
