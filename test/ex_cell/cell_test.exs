@@ -1,9 +1,6 @@
 defmodule ExCell.CellTest do
   use ExUnit.Case
-  import Phoenix.HTML
-
   alias ExCell.Cell
-  alias Phoenix.HTML.Tag
 
   defmodule Foo.MockCell do
     use Cell, namespace: Foo
@@ -32,58 +29,6 @@ defmodule ExCell.CellTest do
 
     test "returns the relative module name with dashes for nested cells" do
       assert Bar.MockCell.name() == "Bar-MockCell"
-    end
-  end
-
-  describe "container/3" do
-    test "defaults to a :div as tag" do
-      assert safe_to_string(MockCell.container())
-        == "<div class=\"MockCell\" data-cell=\"MockCell\" data-cell-params=\"{}\"></div>"
-    end
-
-    test "overrideables" do
-      assert safe_to_string(MockCellWithOverridables.container())
-        == "<div class=\"Bar-MockCellWithOverridables\" data-cell=\"World-MockCellWithOverridables\" data-cell-params=\"{&quot;foo&quot;:&quot;Bar&quot;}\"></div>"
-    end
-
-    test "custom tag" do
-      assert safe_to_string(MockCell.container(%{}, tag: :p))
-        == "<p class=\"MockCell\" data-cell=\"MockCell\" data-cell-params=\"{}\"></p>"
-    end
-
-    test "content" do
-      assert safe_to_string(MockCell.container(%{}, [], do: "TestContent"))
-        == "<div class=\"MockCell\" data-cell=\"MockCell\" data-cell-params=\"{}\">TestContent</div>"
-    end
-
-    test "unsafe content" do
-      assert safe_to_string(
-        MockCell.container(%{}, [], do: Tag.content_tag(:div, "TestContent"))
-      ) == "<div class=\"MockCell\" data-cell=\"MockCell\" data-cell-params=\"{}\"><div>TestContent</div></div>"
-    end
-
-    test "cell params" do
-      assert safe_to_string(
-        MockCell.container(%{ foo: "bar" })
-      ) == "<div class=\"MockCell\" data-cell=\"MockCell\" data-cell-params=\"{&quot;foo&quot;:&quot;bar&quot;}\"></div>"
-    end
-
-    test "attributes" do
-      assert safe_to_string(
-        MockCell.container(%{}, foo: "bar")
-      ) == "<div class=\"MockCell\" data-cell=\"MockCell\" data-cell-params=\"{}\" foo=\"bar\"></div>"
-    end
-
-    test "data attributes" do
-      assert safe_to_string(
-        MockCell.container(%{}, data: [foo: "bar"])
-      ) == "<div class=\"MockCell\" data-cell=\"MockCell\" data-cell-params=\"{}\" data-foo=\"bar\"></div>"
-    end
-
-    test "no closing tag" do
-      assert safe_to_string(
-        MockCell.container(%{}, closing_tag: false, data: [foo: "bar"])
-      ) == "<div class=\"MockCell\" data-cell=\"MockCell\" data-cell-params=\"{}\" data-foo=\"bar\">"
     end
   end
 

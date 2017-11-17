@@ -17,48 +17,6 @@ defmodule ExCell.BaseTest do
     end
   end
 
-  describe "attributes/4" do
-    test "it rejects nil values" do
-      assert Base.attributes(nil, nil, [], %{}) ==
-        [class: "", data: [cell: nil, cell_params: "{}"]]
-    end
-
-    test "it sets the data attribute" do
-      assert Base.attributes(nil, nil, [data: [foo: "bar"]], %{}) ==
-        [class: "", data: [foo: "bar", cell: nil, cell_params: "{}"]]
-    end
-
-    test "it sets the class attribute" do
-      assert Base.attributes(nil, nil, [class: "foo"], %{}) ==
-        [class: "foo", data: [cell: nil, cell_params: "{}"]]
-    end
-  end
-
-  describe "data_attribute/3" do
-    test "it defaults" do
-      assert Base.data_attribute(nil) == [cell: nil, cell_params: "{}"]
-    end
-
-    test "it defaults data to a list" do
-      assert Base.data_attribute(nil, nil, %{}) == [cell: nil, cell_params: "{}"]
-    end
-
-    test "it sets the cell name" do
-      assert Base.data_attribute("Hello", nil, %{}) ==
-        [cell: "Hello", cell_params: "{}"]
-    end
-
-    test "it encodes params" do
-      assert Base.data_attribute(nil, nil, %{foo: "Bar"}) ==
-        [cell: nil, cell_params: "{\"foo\":\"Bar\"}"]
-    end
-
-    test "it adds data attributes" do
-      assert Base.data_attribute(nil, [foo: "Bar"], %{}) ==
-        [foo: "Bar", cell: nil, cell_params: "{}"]
-    end
-  end
-
   describe "class_attribute/2" do
     test "adds the name" do
       assert Base.class_attribute("Hello", "World") ==

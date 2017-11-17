@@ -1,7 +1,6 @@
 defmodule ExCell.Base do
   @moduledoc false
-  alias Phoenix.HTML.Tag
-
+  @adapter ExCell.Adapters.CellJS
   @dialyzer [{:no_match, relative_name: 2}]
 
   def relative_name(module, namespace) do
@@ -11,25 +10,6 @@ defmodule ExCell.Base do
     end
 
     Enum.join(parts, "-")
-  end
-
-  def attributes(cell_name, class_name, options, params) do
-    {data, options} = Keyword.pop(options, :data)
-    {class, options} = Keyword.pop(options, :class)
-
-    options
-    |> Keyword.put(:data, data_attribute(cell_name, data, params))
-    |> Keyword.put(:class, class_attribute(class_name, class))
-    |> Enum.reject(&is_nil/1)
-  end
-
-  def data_attribute(name, data \\ [], params \\ %{})
-  def data_attribute(name, data, params) when is_nil(data), do:
-    data_attribute(name, [], params)
-
-  def data_attribute(name, data, params) when is_list(data) do
-    data
-    |> Keyword.merge(cell: name, cell_params: Poison.encode!(params))
   end
 
   def class_attribute(name, class) do
@@ -155,7 +135,7 @@ defmodule ExCell.Base do
       def container(%{} = params, options) when is_list(options), do:
         container(params, options, [do: nil])
       def container(%{} = params, options, [do: content]) when is_list(options), do:
-        do_container(adapter_options(params, options, content))
+        @adapter.container(adapter_options(params, options, content))
 
       def adapter_options(params \\ %{}, attributes \\ [], content \\ nil) do
         {tag, attributes} = Keyword.pop(attributes, :tag, :div)
@@ -174,26 +154,6 @@ defmodule ExCell.Base do
           closing_tag: closing_tag,
           content: content
         }
-      end
-
-      defp do_container(%{
-        name: name,
-        attributes: attributes,
-        params: params,
-        tag: tag,
-        closing_tag: closing_tag,
-        content: content
-      }) do
-        attributes = Keyword.put(
-          attributes,
-          :data,
-          data_attribute(name, Keyword.get(attributes, :data), params)
-        )
-
-        case closing_tag do
-          false -> Tag.tag(tag, attributes)
-          _ -> Tag.content_tag(tag, content, attributes)
-        end
       end
 
       defoverridable [class_name: 0, cell_name: 0, params: 0]
