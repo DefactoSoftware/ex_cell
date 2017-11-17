@@ -13,12 +13,12 @@ defmodule ExCell.Base do
     Enum.join(parts, "-")
   end
 
-  def attributes(attribute_name, class_name, options, params) do
+  def attributes(cell_name, class_name, options, params) do
     {data, options} = Keyword.pop(options, :data)
     {class, options} = Keyword.pop(options, :class)
 
     options
-    |> Keyword.put(:data, data_attribute(attribute_name, data, params))
+    |> Keyword.put(:data, data_attribute(cell_name, data, params))
     |> Keyword.put(:class, class_attribute(class_name, class))
     |> Enum.reject(&is_nil/1)
   end
@@ -78,10 +78,10 @@ defmodule ExCell.Base do
 
       ## Examples
 
-          iex(0)> AvatarCell.attribute_name()
+          iex(0)> AvatarCell.cell_name()
           "AvatarCell"
       """
-      def attribute_name, do: name()
+      def cell_name, do: name()
 
       @doc false
       def params, do: %{}
@@ -155,17 +155,39 @@ defmodule ExCell.Base do
       def container(%{} = params, options) when is_list(options), do:
         container(params, options, [do: nil])
       def container(%{} = params, options, [do: content]) when is_list(options), do:
-        do_container(params, options, content)
+        do_container(adapter_options(params, options, content))
 
-      defp do_container(params, options, content) do
-        {tag, options} = Keyword.pop(options, :tag, :div)
-        {closing_tag, options} = Keyword.pop(options, :closing_tag, true)
+      def adapter_options(params \\ %{}, attributes \\ [], content \\ nil) do
+        {tag, attributes} = Keyword.pop(attributes, :tag, :div)
+        {closing_tag, attributes} = Keyword.pop(attributes, :closing_tag, true)
+        {cell_name, attributes} =
+          Keyword.pop(attributes, :cell_name, cell_name())
 
-        attributes = attributes(
-          attribute_name(),
-          class_name(),
-          options,
-          params(params)
+        class_attribute =
+          class_attribute(class_name(), Keyword.get(attributes, :class))
+
+        %{
+          name: cell_name,
+          attributes: Keyword.put(attributes, :class, class_attribute),
+          params: params(params),
+          tag: tag,
+          closing_tag: closing_tag,
+          content: content
+        }
+      end
+
+      defp do_container(%{
+        name: name,
+        attributes: attributes,
+        params: params,
+        tag: tag,
+        closing_tag: closing_tag,
+        content: content
+      }) do
+        attributes = Keyword.put(
+          attributes,
+          :data,
+          data_attribute(name, Keyword.get(attributes, :data), params)
         )
 
         case closing_tag do
@@ -174,7 +196,7 @@ defmodule ExCell.Base do
         end
       end
 
-      defoverridable [class_name: 0, attribute_name: 0, params: 0]
+      defoverridable [class_name: 0, cell_name: 0, params: 0]
     end
   end
 end
