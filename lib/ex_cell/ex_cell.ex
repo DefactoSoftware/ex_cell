@@ -14,7 +14,6 @@ defmodule ExCell do
     |> Keyword.get(keyword, fallback)
   end
 
-
   def relative_name(module, namespace) do
     parts = case namespace do
       nil -> Module.split(module)
@@ -32,7 +31,8 @@ defmodule ExCell do
   end
 
   def container(module, params, attributes, [do: content]) do
-    options(module, params, attributes, content)
+    module
+    |> options(params, attributes, content)
     |> module.__adapter__().container()
   end
 

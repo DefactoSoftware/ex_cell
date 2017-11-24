@@ -1,4 +1,6 @@
 defmodule ExCell.Adapters.CellJS do
+  @moduledoc false
+
   @behaviour ExCell.Adapter
 
   alias Phoenix.HTML.Tag
