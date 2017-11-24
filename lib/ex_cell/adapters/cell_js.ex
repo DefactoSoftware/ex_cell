@@ -6,11 +6,8 @@ defmodule ExCell.Adapters.CellJS do
   def data_attribute(name, data \\ [], params \\ %{})
   def data_attribute(name, data, params) when is_nil(data), do:
     data_attribute(name, [], params)
-
-  def data_attribute(name, data, params) when is_list(data) do
-    data
-    |> Keyword.merge(cell: name, cell_params: Poison.encode!(params))
-  end
+  def data_attribute(name, data, params) when is_list(data), do:
+    Keyword.merge(data, cell: name, cell_params: Poison.encode!(params))
 
   def attributes(name, attributes \\ [], params \\ %{}) do
     Keyword.put(
@@ -24,10 +21,11 @@ defmodule ExCell.Adapters.CellJS do
     name: name,
     attributes: attributes,
     params: params,
-    tag: tag,
-    closing_tag: closing_tag,
     content: content
   }) do
+    {tag, attributes} = Keyword.pop(attributes, :tag, :div)
+    {closing_tag, attributes} = Keyword.pop(attributes, :closing_tag, true)
+
     attributes = attributes(name, attributes, params)
 
     case closing_tag do

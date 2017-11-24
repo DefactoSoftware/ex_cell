@@ -2,16 +2,23 @@ defmodule ExCell.CellTest do
   use ExUnit.Case
   alias ExCell.Cell
 
+  defmodule MockAdapter do
+    def container(options), do: options
+  end
+
   defmodule Foo.MockCell do
-    use Cell, namespace: Foo
+    use Cell, namespace: Foo,
+              adapter: MockAdapter
   end
 
   defmodule Foo.Bar.MockCell do
-    use Cell, namespace: Foo
+    use Cell, namespace: Foo,
+              adapter: MockAdapter
   end
 
   defmodule Foo.MockCellWithOverridables do
-    use Cell, namespace: Foo
+    use Cell, namespace: Foo,
+              adapter: MockAdapter
 
     def params, do: %{foo: "Bar"}
     def class_name, do: "Bar-" <> name()
@@ -73,100 +80,64 @@ defmodule ExCell.CellTest do
     end
   end
 
-  describe "adapter_options/3" do
+  describe "container/3" do
     test "without arguments" do
-      assert MockCell.adapter_options() == %{
+      assert MockCell.container() == %{
         name: "MockCell",
         attributes: [
           class: "MockCell"
         ],
-        closing_tag: true,
         content: nil,
-        params: %{},
-        tag: :div
+        params: %{}
       }
     end
 
     test "with overrideables" do
-      assert MockCellWithOverridables.adapter_options() == %{
+      assert MockCellWithOverridables.container() == %{
         name: "World-MockCellWithOverridables",
         attributes: [
           class: "Bar-MockCellWithOverridables"
         ],
-        closing_tag: true,
         content: nil,
         params: %{
           foo: "Bar"
-        },
-        tag: :div
-      }
-    end
-
-    test "with custom tag" do
-      assert MockCell.adapter_options(%{}, tag: :p) == %{
-        name: "MockCell",
-        attributes: [
-          class: "MockCell"
-        ],
-        closing_tag: true,
-        content: nil,
-        params: %{},
-        tag: :p
+        }
       }
     end
 
     test "with content" do
-      assert MockCell.adapter_options(%{}, [], "TestContent") == %{
+      assert MockCell.container(%{}, [], [do: "TestContent"]) == %{
         name: "MockCell",
         attributes: [
           class: "MockCell"
         ],
-        closing_tag: true,
         content: "TestContent",
-        params: %{},
-        tag: :div
+        params: %{}
       }
     end
 
     test "with cell params" do
-      assert MockCell.adapter_options(%{ foo: "bar" }) == %{
+      assert MockCell.container(%{ foo: "bar" }) == %{
         name: "MockCell",
         attributes: [
           class: "MockCell"
         ],
-        closing_tag: true,
         content: nil,
         params: %{
           foo: "bar"
-        },
-        tag: :div
+        }
       }
     end
 
     test "with custom atttributes" do
-      assert MockCell.adapter_options(%{}, foo: "bar") == %{
+      assert MockCell.container(%{}, foo: "bar") == %{
         name: "MockCell",
         attributes: [
           class: "MockCell",
           foo: "bar"
         ],
-        closing_tag: true,
         content: nil,
-        params: %{},
-        tag: :div
-      }
-    end
-
-    test "without closing tag" do
-      assert MockCell.adapter_options(%{}, closing_tag: false) == %{
-        name: "MockCell",
-        attributes: [
-          class: "MockCell"
-        ],
-        closing_tag: false,
-        content: nil,
-        params: %{},
-        tag: :div
+        params: %{}
       }
     end
   end
