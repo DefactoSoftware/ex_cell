@@ -1,3 +1,3 @@
 defmodule ExCell.Adapter do
-  @callback container(Map.t, List.t, term) :: {:safe, List.t}
+  @callback container(Map.t) :: {:safe, List.t}
 end
