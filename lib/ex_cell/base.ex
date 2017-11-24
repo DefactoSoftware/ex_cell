@@ -1,9 +1,11 @@
 defmodule ExCell.Base do
+  @moduledoc false
+
   defmacro __using__(opts \\ []) do
     quote do
       import ExCell.View
 
-      @adapter unquote(opts[:adapter] || ExCell.Adapters.CellJS)
+      @adapter unquote(opts[:adapter])
       @namespace unquote(opts[:namespace])
 
       @doc """
