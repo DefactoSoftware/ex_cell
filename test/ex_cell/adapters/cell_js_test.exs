@@ -4,12 +4,7 @@ defmodule ExCell.Adapters.CellJSTest do
   import Phoenix.HTML
   alias Phoenix.HTML.Tag
 
-  alias ExCell.Cell
   alias ExCell.Adapters.CellJS
-
-  defmodule MockCell do
-    use Cell, namespace: ExCell.Adapters.CellJSTest
-  end
 
   describe "attributes/3" do
     test "it rejects nil values" do
@@ -55,48 +50,121 @@ defmodule ExCell.Adapters.CellJSTest do
 
   describe "container/1" do
     test "defaults to a :div as tag" do
-      assert safe_to_string(CellJS.container(MockCell.adapter_options()))
+      attributes = %{
+        name: "MockCell",
+        attributes: [
+          class: "MockCell"
+        ],
+        params: %{},
+        content: nil
+      }
+
+      assert safe_to_string(CellJS.container(attributes))
         == "<div class=\"MockCell\" data-cell=\"MockCell\" data-cell-params=\"{}\"></div>"
     end
 
     test "custom tag" do
-      assert safe_to_string(CellJS.container(MockCell.adapter_options(%{}, tag: :p)))
+      attributes = %{
+        name: "MockCell",
+        attributes: [
+          tag: :p,
+          class: "MockCell"
+        ],
+        params: %{},
+        content: nil
+      }
+
+      assert safe_to_string(CellJS.container(attributes))
         == "<p class=\"MockCell\" data-cell=\"MockCell\" data-cell-params=\"{}\"></p>"
     end
 
     test "content" do
-      assert safe_to_string(CellJS.container(MockCell.adapter_options(%{}, [], "TestContent")))
+      attributes = %{
+        name: "MockCell",
+        attributes: [
+          class: "MockCell"
+        ],
+        params: %{},
+        content: "TestContent"
+      }
+
+      assert safe_to_string(CellJS.container(attributes))
         == "<div class=\"MockCell\" data-cell=\"MockCell\" data-cell-params=\"{}\">TestContent</div>"
     end
 
     test "unsafe content" do
-      assert safe_to_string(
-        CellJS.container(MockCell.adapter_options(%{}, [], Tag.content_tag(:div, "TestContent")))
-      ) == "<div class=\"MockCell\" data-cell=\"MockCell\" data-cell-params=\"{}\"><div>TestContent</div></div>"
+      attributes = %{
+        name: "MockCell",
+        attributes: [
+          class: "MockCell"
+        ],
+        params: %{},
+        content: Tag.content_tag(:div, "TestContent")
+      }
+
+      assert safe_to_string(CellJS.container(attributes))
+        == "<div class=\"MockCell\" data-cell=\"MockCell\" data-cell-params=\"{}\"><div>TestContent</div></div>"
     end
 
     test "cell params" do
-      assert safe_to_string(
-        CellJS.container(MockCell.adapter_options(%{ foo: "bar" }))
-      ) == "<div class=\"MockCell\" data-cell=\"MockCell\" data-cell-params=\"{&quot;foo&quot;:&quot;bar&quot;}\"></div>"
+      attributes = %{
+        name: "MockCell",
+        attributes: [
+          class: "MockCell"
+        ],
+        params: %{
+          foo: "bar"
+        },
+        content: nil
+      }
+
+      assert safe_to_string(CellJS.container(attributes))
+        == "<div class=\"MockCell\" data-cell=\"MockCell\" data-cell-params=\"{&quot;foo&quot;:&quot;bar&quot;}\"></div>"
     end
 
     test "attributes" do
-      assert safe_to_string(
-        CellJS.container(MockCell.adapter_options(%{}, foo: "bar"))
-      ) == "<div class=\"MockCell\" data-cell=\"MockCell\" data-cell-params=\"{}\" foo=\"bar\"></div>"
+      attributes = %{
+        name: "MockCell",
+        attributes: [
+          class: "MockCell",
+          foo: "bar"
+        ],
+        params: %{},
+        content: nil
+      }
+
+      assert safe_to_string(CellJS.container(attributes))
+        == "<div class=\"MockCell\" data-cell=\"MockCell\" data-cell-params=\"{}\" foo=\"bar\"></div>"
     end
 
     test "data attributes" do
-      assert safe_to_string(
-        CellJS.container(MockCell.adapter_options(%{}, data: [foo: "bar"]))
-      ) == "<div class=\"MockCell\" data-cell=\"MockCell\" data-cell-params=\"{}\" data-foo=\"bar\"></div>"
+      attributes = %{
+        name: "MockCell",
+        attributes: [
+          class: "MockCell",
+          data: [foo: "bar"]
+        ],
+        params: %{},
+        content: nil
+      }
+
+      assert safe_to_string(CellJS.container(attributes))
+        == "<div class=\"MockCell\" data-cell=\"MockCell\" data-cell-params=\"{}\" data-foo=\"bar\"></div>"
     end
 
     test "no closing tag" do
-      assert safe_to_string(
-        CellJS.container(MockCell.adapter_options(%{}, closing_tag: false, data: [foo: "bar"]))
-      ) == "<div class=\"MockCell\" data-cell=\"MockCell\" data-cell-params=\"{}\" data-foo=\"bar\">"
+      attributes = %{
+        name: "MockCell",
+        attributes: [
+          class: "MockCell",
+          closing_tag: false
+        ],
+        params: %{},
+        content: nil
+      }
+
+      assert safe_to_string(CellJS.container(attributes))
+        == "<div class=\"MockCell\" data-cell=\"MockCell\" data-cell-params=\"{}\">"
     end
   end
 end

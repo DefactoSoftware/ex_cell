@@ -1,27 +1,7 @@
 defmodule ExCell.Base do
-  @moduledoc false
-  @dialyzer [{:no_match, relative_name: 2}]
-
-  def relative_name(module, namespace) do
-    parts = case namespace do
-      nil -> Module.split(module)
-      _ -> ExCell.module_relative_to(module, namespace)
-    end
-
-    Enum.join(parts, "-")
-  end
-
-  def class_attribute(name, class) do
-    [name, class]
-    |> List.flatten
-    |> Enum.reject(&is_nil/1)
-    |> Enum.join(" ")
-  end
-
   defmacro __using__(opts \\ []) do
     quote do
       import ExCell.View
-      import ExCell.Base
 
       @adapter unquote(opts[:adapter] || ExCell.Adapters.CellJS)
       @namespace unquote(opts[:namespace])
@@ -38,7 +18,8 @@ defmodule ExCell.Base do
         iex(1)> User.AvatarCell.name()
         "User-AvatarCell"
       """
-      def name, do: relative_name(__MODULE__, @namespace)
+      def __adapter__, do: @adapter
+      def name, do: ExCell.relative_name(__MODULE__, @namespace)
 
       @doc """
       Generates the CSS class name based on the cell name. Can be overriden
@@ -135,26 +116,7 @@ defmodule ExCell.Base do
       def container(%{} = params, options) when is_list(options), do:
         container(params, options, [do: nil])
       def container(%{} = params, options, [do: content]) when is_list(options), do:
-        @adapter.container(adapter_options(params, options, content))
-
-      def adapter_options(params \\ %{}, attributes \\ [], content \\ nil) do
-        {tag, attributes} = Keyword.pop(attributes, :tag, :div)
-        {closing_tag, attributes} = Keyword.pop(attributes, :closing_tag, true)
-        {cell_name, attributes} =
-          Keyword.pop(attributes, :cell_name, cell_name())
-
-        class_attribute =
-          class_attribute(class_name(), Keyword.get(attributes, :class))
-
-        %{
-          name: cell_name,
-          attributes: Keyword.put(attributes, :class, class_attribute),
-          params: params(params),
-          tag: tag,
-          closing_tag: closing_tag,
-          content: content
-        }
-      end
+        ExCell.container(__MODULE__, params, options, [do: content])
 
       defoverridable [class_name: 0, cell_name: 0, params: 0]
     end
