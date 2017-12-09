@@ -156,8 +156,8 @@ end
 ### template.html.eex
 The template behave like any other template in Phoenix except that they have access to a container method to render the appropiate cell HTML container:
 
-```ex
-# lib/app_web/cell/avatar/template.html.eex
+```eex
+<!-- lib/app_web/cell/avatar/template.html.eex -->
 <%= container(tag: :span,  class: class_names(assigns)) do %>
   <%= if image_path = avatar_image_path(@user) do %>
     <%= img_tag(image_path, class: class_name("image"), alt: avatar_image_alt(@user)) %>
