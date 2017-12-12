@@ -5,7 +5,7 @@ defmodule ExCell.Adapters.CellJS do
 
   alias Phoenix.HTML.Tag
 
-  def void_elements(), do: [
+  def void_elements, do: [
     "area",
     "base",
     "br",
