@@ -1,5 +1,33 @@
 defmodule ExCell do
-  @moduledoc false
+  @moduledoc """
+  ExCell is used to split larger views in smaller cells that can be reused and
+  easily packaged with Javascript and CSS.
+
+  A cell consists of a couple of files:
+  ```
+  cells
+  |- avatar
+  |  |- template.html.eex
+  |  |- view.html.eex
+  |  |- style.css (optional)
+  |  |- index.js (optional)
+  |- header
+  ...
+  ```
+
+  You can render the cell in a view, controller or another cell by adding the following code:
+  ```ex
+  cell(AvatarCell, class: "CustomClassName", user: %User{})
+  ```
+
+  This would generate the following HTML when you render the cell:
+
+  ```html
+  <span class="AvatarCell" data-cell="AvatarCell" data-cell-params="{}">
+    <img src="/images/foo/avatar.jpg" class="AvatarCell-Image" alt="foo" />
+  </span>
+  ```
+  """
   @dialyzer [{:no_match, relative_name: 2}]
 
   def module_relative_to(module, relative_to) do
