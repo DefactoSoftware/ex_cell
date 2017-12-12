@@ -5,6 +5,28 @@ defmodule ExCell.Adapters.CellJS do
 
   alias Phoenix.HTML.Tag
 
+  def void_elements, do: [
+    "area",
+    "base",
+    "br",
+    "col",
+    "command",
+    "embed",
+    "hr",
+    "img",
+    "input",
+    "keygen",
+    "link",
+    "meta",
+    "param",
+    "source",
+    "track",
+    "wbr"
+  ]
+
+  def void_element?(tag) when is_atom(tag), do: void_element?(Atom.to_string(tag))
+  def void_element?(tag), do: tag in void_elements()
+
   def data_attribute(name, data \\ [], params \\ %{})
   def data_attribute(name, nil, params), do: data_attribute(name, [], params)
   def data_attribute(name, data, params) when is_list(data), do:
@@ -25,13 +47,12 @@ defmodule ExCell.Adapters.CellJS do
     content: content
   }) do
     {tag, attributes} = Keyword.pop(attributes, :tag, :div)
-    {closing_tag, attributes} = Keyword.pop(attributes, :closing_tag, true)
 
     attributes = attributes(name, attributes, params)
 
-    case closing_tag do
-      false -> Tag.tag(tag, attributes)
-      _ -> Tag.content_tag(tag, content, attributes)
+    case void_element?(tag) do
+      true -> Tag.tag(tag, attributes)
+      false -> Tag.content_tag(tag, content, attributes)
     end
   end
 end

@@ -78,6 +78,25 @@ defmodule ExCell.Adapters.CellJSTest do
         == "<p class=\"MockCell\" data-cell=\"MockCell\" data-cell-params=\"{}\"></p>"
     end
 
+    test "auto closes void elements" do
+      options = %{
+        name: "MockCell",
+        attributes: [
+          class: "MockCell"
+        ],
+        params: %{},
+        content: nil
+      }
+
+      Enum.each(CellJS.void_elements(), fn (void_element) ->
+        void_element_options = Map.update!(
+          options, :attributes, &Keyword.put(&1, :tag, void_element))
+
+        assert safe_to_string(CellJS.container(void_element_options))
+          == "<#{void_element} class=\"MockCell\" data-cell=\"MockCell\" data-cell-params=\"{}\">"
+      end)
+    end
+
     test "content" do
       attributes = %{
         name: "MockCell",
@@ -150,21 +169,6 @@ defmodule ExCell.Adapters.CellJSTest do
 
       assert safe_to_string(CellJS.container(attributes))
         == "<div class=\"MockCell\" data-cell=\"MockCell\" data-cell-params=\"{}\" data-foo=\"bar\"></div>"
-    end
-
-    test "no closing tag" do
-      attributes = %{
-        name: "MockCell",
-        attributes: [
-          class: "MockCell",
-          closing_tag: false
-        ],
-        params: %{},
-        content: nil
-      }
-
-      assert safe_to_string(CellJS.container(attributes))
-        == "<div class=\"MockCell\" data-cell=\"MockCell\" data-cell-params=\"{}\">"
     end
   end
 end
