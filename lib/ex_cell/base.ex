@@ -1,49 +1,11 @@
 defmodule ExCell.Base do
   @moduledoc false
-  alias Phoenix.HTML.Tag
-
-  @dialyzer [{:no_match, relative_name: 2}]
-
-  def relative_name(module, namespace) do
-    parts = case namespace do
-      nil -> Module.split(module)
-      _ -> ExCell.module_relative_to(module, namespace)
-    end
-
-    Enum.join(parts, "-")
-  end
-
-  def attributes(attribute_name, class_name, options, params) do
-    {data, options} = Keyword.pop(options, :data)
-    {class, options} = Keyword.pop(options, :class)
-
-    options
-    |> Keyword.put(:data, data_attribute(attribute_name, data, params))
-    |> Keyword.put(:class, class_attribute(class_name, class))
-    |> Enum.reject(&is_nil/1)
-  end
-
-  def data_attribute(name, data \\ [], params \\ %{})
-  def data_attribute(name, data, params) when is_nil(data), do:
-    data_attribute(name, [], params)
-
-  def data_attribute(name, data, params) when is_list(data) do
-    data
-    |> Keyword.merge(cell: name, cell_params: Poison.encode!(params))
-  end
-
-  def class_attribute(name, class) do
-    [name, class]
-    |> List.flatten
-    |> Enum.reject(&is_nil/1)
-    |> Enum.join(" ")
-  end
 
   defmacro __using__(opts \\ []) do
     quote do
       import ExCell.View
-      import ExCell.Base
 
+      @adapter unquote(opts[:adapter])
       @namespace unquote(opts[:namespace])
 
       @doc """
@@ -58,7 +20,8 @@ defmodule ExCell.Base do
         iex(1)> User.AvatarCell.name()
         "User-AvatarCell"
       """
-      def name, do: relative_name(__MODULE__, @namespace)
+      def __adapter__, do: @adapter
+      def name, do: ExCell.relative_name(__MODULE__, @namespace)
 
       @doc """
       Generates the CSS class name based on the cell name. Can be overriden
@@ -78,10 +41,10 @@ defmodule ExCell.Base do
 
       ## Examples
 
-          iex(0)> AvatarCell.attribute_name()
+          iex(0)> AvatarCell.cell_name()
           "AvatarCell"
       """
-      def attribute_name, do: name()
+      def cell_name, do: name()
 
       @doc false
       def params, do: %{}
@@ -155,26 +118,9 @@ defmodule ExCell.Base do
       def container(%{} = params, options) when is_list(options), do:
         container(params, options, [do: nil])
       def container(%{} = params, options, [do: content]) when is_list(options), do:
-        do_container(params, options, content)
+        ExCell.container(__MODULE__, params, options, [do: content])
 
-      defp do_container(params, options, content) do
-        {tag, options} = Keyword.pop(options, :tag, :div)
-        {closing_tag, options} = Keyword.pop(options, :closing_tag, true)
-
-        attributes = attributes(
-          attribute_name(),
-          class_name(),
-          options,
-          params(params)
-        )
-
-        case closing_tag do
-          false -> Tag.tag(tag, attributes)
-          _ -> Tag.content_tag(tag, content, attributes)
-        end
-      end
-
-      defoverridable [class_name: 0, attribute_name: 0, params: 0]
+      defoverridable [class_name: 0, cell_name: 0, params: 0]
     end
   end
 end

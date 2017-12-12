@@ -1,24 +1,28 @@
 defmodule ExCell.CellTest do
   use ExUnit.Case
-  import Phoenix.HTML
-
   alias ExCell.Cell
-  alias Phoenix.HTML.Tag
+
+  defmodule MockAdapter do
+    def container(options), do: options
+  end
 
   defmodule Foo.MockCell do
-    use Cell, namespace: Foo
+    use Cell, namespace: Foo,
+              adapter: MockAdapter
   end
 
   defmodule Foo.Bar.MockCell do
-    use Cell, namespace: Foo
+    use Cell, namespace: Foo,
+              adapter: MockAdapter
   end
 
   defmodule Foo.MockCellWithOverridables do
-    use Cell, namespace: Foo
+    use Cell, namespace: Foo,
+              adapter: MockAdapter
 
     def params, do: %{foo: "Bar"}
     def class_name, do: "Bar-" <> name()
-    def attribute_name, do: "World-" <> name()
+    def cell_name, do: "World-" <> name()
   end
 
   alias Foo.Bar
@@ -35,58 +39,6 @@ defmodule ExCell.CellTest do
     end
   end
 
-  describe "container/3" do
-    test "defaults to a :div as tag" do
-      assert safe_to_string(MockCell.container())
-        == "<div class=\"MockCell\" data-cell=\"MockCell\" data-cell-params=\"{}\"></div>"
-    end
-
-    test "overrideables" do
-      assert safe_to_string(MockCellWithOverridables.container())
-        == "<div class=\"Bar-MockCellWithOverridables\" data-cell=\"World-MockCellWithOverridables\" data-cell-params=\"{&quot;foo&quot;:&quot;Bar&quot;}\"></div>"
-    end
-
-    test "custom tag" do
-      assert safe_to_string(MockCell.container(%{}, tag: :p))
-        == "<p class=\"MockCell\" data-cell=\"MockCell\" data-cell-params=\"{}\"></p>"
-    end
-
-    test "content" do
-      assert safe_to_string(MockCell.container(%{}, [], do: "TestContent"))
-        == "<div class=\"MockCell\" data-cell=\"MockCell\" data-cell-params=\"{}\">TestContent</div>"
-    end
-
-    test "unsafe content" do
-      assert safe_to_string(
-        MockCell.container(%{}, [], do: Tag.content_tag(:div, "TestContent"))
-      ) == "<div class=\"MockCell\" data-cell=\"MockCell\" data-cell-params=\"{}\"><div>TestContent</div></div>"
-    end
-
-    test "cell params" do
-      assert safe_to_string(
-        MockCell.container(%{ foo: "bar" })
-      ) == "<div class=\"MockCell\" data-cell=\"MockCell\" data-cell-params=\"{&quot;foo&quot;:&quot;bar&quot;}\"></div>"
-    end
-
-    test "attributes" do
-      assert safe_to_string(
-        MockCell.container(%{}, foo: "bar")
-      ) == "<div class=\"MockCell\" data-cell=\"MockCell\" data-cell-params=\"{}\" foo=\"bar\"></div>"
-    end
-
-    test "data attributes" do
-      assert safe_to_string(
-        MockCell.container(%{}, data: [foo: "bar"])
-      ) == "<div class=\"MockCell\" data-cell=\"MockCell\" data-cell-params=\"{}\" data-foo=\"bar\"></div>"
-    end
-
-    test "no closing tag" do
-      assert safe_to_string(
-        MockCell.container(%{}, closing_tag: false, data: [foo: "bar"])
-      ) == "<div class=\"MockCell\" data-cell=\"MockCell\" data-cell-params=\"{}\" data-foo=\"bar\">"
-    end
-  end
-
   describe "class_name/0" do
     test "class_name()" do
       assert MockCell.class_name == "MockCell"
@@ -97,13 +49,13 @@ defmodule ExCell.CellTest do
     end
   end
 
-  describe "attribute_name/0" do
-    test "attribute_name()" do
-      assert MockCell.attribute_name == "MockCell"
+  describe "cell_name/0" do
+    test "cell_name()" do
+      assert MockCell.cell_name == "MockCell"
     end
 
-    test "attribute_name() is overrideable" do
-      assert MockCellWithOverridables.attribute_name == "World-MockCellWithOverridables"
+    test "cell_name() is overrideable" do
+      assert MockCellWithOverridables.cell_name == "World-MockCellWithOverridables"
     end
   end
 
@@ -125,6 +77,68 @@ defmodule ExCell.CellTest do
     test "params(values) with overrideables" do
       assert MockCellWithOverridables.params(%{hello: "World"})
         == %{foo: "Bar", hello: "World"}
+    end
+  end
+
+  describe "container/3" do
+    test "without arguments" do
+      assert MockCell.container() == %{
+        name: "MockCell",
+        attributes: [
+          class: "MockCell"
+        ],
+        content: nil,
+        params: %{}
+      }
+    end
+
+    test "with overrideables" do
+      assert MockCellWithOverridables.container() == %{
+        name: "World-MockCellWithOverridables",
+        attributes: [
+          class: "Bar-MockCellWithOverridables"
+        ],
+        content: nil,
+        params: %{
+          foo: "Bar"
+        }
+      }
+    end
+
+    test "with content" do
+      assert MockCell.container(%{}, [], [do: "TestContent"]) == %{
+        name: "MockCell",
+        attributes: [
+          class: "MockCell"
+        ],
+        content: "TestContent",
+        params: %{}
+      }
+    end
+
+    test "with cell params" do
+      assert MockCell.container(%{ foo: "bar" }) == %{
+        name: "MockCell",
+        attributes: [
+          class: "MockCell"
+        ],
+        content: nil,
+        params: %{
+          foo: "bar"
+        }
+      }
+    end
+
+    test "with custom atttributes" do
+      assert MockCell.container(%{}, foo: "bar") == %{
+        name: "MockCell",
+        attributes: [
+          class: "MockCell",
+          foo: "bar"
+        ],
+        content: nil,
+        params: %{}
+      }
     end
   end
 end
