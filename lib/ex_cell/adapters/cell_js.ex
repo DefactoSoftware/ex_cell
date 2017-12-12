@@ -6,8 +6,7 @@ defmodule ExCell.Adapters.CellJS do
   alias Phoenix.HTML.Tag
 
   def data_attribute(name, data \\ [], params \\ %{})
-  def data_attribute(name, data, params) when is_nil(data), do:
-    data_attribute(name, [], params)
+  def data_attribute(name, nil, params), do: data_attribute(name, [], params)
   def data_attribute(name, data, params) when is_list(data), do:
     Keyword.merge(data, cell: name, cell_params: Poison.encode!(params))
 
