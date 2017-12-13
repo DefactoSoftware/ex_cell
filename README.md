@@ -2,19 +2,20 @@
 [![CircleCI](https://circleci.com/gh/DefactoSoftware/ex_cell/tree/master.svg?style=shield)](https://circleci.com/gh/DefactoSoftware/ex_cell)
 
 # ex_cell
+
 A module for creating coupled modules of CSS, Javascript and Views in Phoenix
 
 ## Installation
 
 Add the following to the dependencies in `mix.exs`
+
 ```ex
-{:ex_cell, "~> 0.0.8"}
+{:ex_cell, "~> 0.0.9"}
 ```
 
 In Phoenix 1.3.0+ add the following to `lib/app_web/web.ex`:
 
 ```ex
-
 def controller do
   quote do
   ...
@@ -37,7 +38,8 @@ end
 
 def cell(opts \\ []) do
   quote do
-    use ExCell.Cell, namespace: AppWeb
+    use ExCell.Cell, namespace: AppWeb,
+                     adapter: ExCell.Adapters.CellJS
 
     use Phoenix.View, root: "lib/app_web/cells",
                       path: ExCell.View.relative_path(__MODULE__AppWeb)
@@ -55,12 +57,16 @@ def cell(opts \\ []) do
 end
 ```
 
-Now you can add a cells/ directory in lib/app_web and place cells in that directory.
+Now you can add a cells/ directory in lib/app_web and place cells in that
+directory.
 
-Every cell should contain a view.ex and a template.html.eex. The view and template are tightly linked together by the Cell.
+Every cell should contain a view.ex and a template.html.eex. The view and
+template are tightly linked together by the Cell.
 
 ## CSS
-To ensure all the CSS can be placed next to your cell you need to add the following to your `brunch-config.js`:
+
+To ensure all the CSS can be placed next to your cell you need to add the
+following to your `brunch-config.js`:
 
 ```js
 ...
@@ -75,10 +81,15 @@ stylesheets: {
 ...
 ```
 
-If you use something other than `brunch` to manage your assets, you need to add the files to the assets manager of choice.
+If you use something other than `brunch` to manage your assets, you need to add
+the files to the assets manager of choice.
 
 ## Javascript
-If you wish to use the accompanying `cell-js` library you can install [cell-js](https://github.com/DefactoSoftware/cells-js) with your package manager. After you installed the Javascript package, add the following to your `brunch-config.js`:
+
+If you wish to use the accompanying `cell-js` library you can install
+[cell-js](https://github.com/DefactoSoftware/cells-js) with your package
+manager. After you installed the Javascript package, add the following to your
+`brunch-config.js`:
 
 ```js
 ...
@@ -94,9 +105,10 @@ javascripts: {
 ...
 ```
 
-
 ## Usage
+
 A cell consists of a couple of files:
+
 ```
 cells
 |- avatar
@@ -108,7 +120,9 @@ cells
 ...
 ```
 
-You can render the cell in a view, controller or another cell by adding the following code:
+You can render the cell in a view, controller or another cell by adding the
+following code:
+
 ```ex
 cell(AvatarCell, class: "CustomClassName", user: %User{})
 ```
@@ -121,10 +135,12 @@ This would generate the following HTML when you render the cell:
 </span>
 ```
 
-
 ### view.ex
 
-Views of cells behave like normal views in Phoenix, except that they have provide a container method that can be used in a template to render the appropiate HTML needed to initialize the Javascript for a cell and have a predefined class that is the same as the cell name minus the namespace.
+Views of cells behave like normal views in Phoenix, except that they have
+provide a container method that can be used in a template to render the
+appropiate HTML needed to initialize the Javascript for a cell and have a
+predefined class that is the same as the cell name minus the namespace.
 
 ```ex
 # lib/app_web/cell/avatar/view.ex
@@ -154,7 +170,9 @@ end
 ```
 
 ### template.html.eex
-The template behave like any other template in Phoenix except that they have access to a container method to render the appropiate cell HTML container:
+
+The template behave like any other template in Phoenix except that they have
+access to a container method to render the appropiate cell HTML container:
 
 ```eex
 <!-- lib/app_web/cell/avatar/template.html.eex -->
@@ -166,7 +184,11 @@ The template behave like any other template in Phoenix except that they have acc
 ```
 
 ### style.css
-This can be any type of CSS file that you wish (preprocessed or other wise). Because cells provides methods to namespace your CSS you are advised to use a similar namespace or use something like `postcss-modules` to ensure all classses defined are unique.
+
+This can be any type of CSS file that you wish (preprocessed or other wise).
+Because cells provides methods to namespace your CSS you are advised to use a
+similar namespace or use something like `postcss-modules` to ensure all classses
+defined are unique.
 
 ```css
 .AvatarCell {
@@ -182,18 +204,19 @@ This can be any type of CSS file that you wish (preprocessed or other wise). Bec
 ```
 
 ### index.js
-If you use `cells-js` you can create Javascript that is tightly coupled to the cell.
+
+If you use `cells-js` you can create Javascript that is tightly coupled to the
+cell.
 
 ```js
 import { Cell, Builder } from "cells-js";
 
 class AvatarCell extends Cell {
   initialize() {
-    this.element.addEventListener('click', this.onToggleOpenClass)
-
+    this.element.addEventListener("click", this.onToggleOpenClass);
   }
 
-  onToggleOpenClass = (e)=> this.element.classList.toggle("open");
+  onToggleOpenClass = e => this.element.classList.toggle("open");
 }
 
 Builder.register(AvatarCell, "AvatarCell");
