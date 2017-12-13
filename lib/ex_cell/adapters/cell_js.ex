@@ -2,13 +2,13 @@ defmodule ExCell.Adapters.CellJS do
   @moduledoc """
   The CellJS adapter can be used to output the cells as HTML compatible with
   [cells-js](https://github.com/DefactoSoftware/cells-js). CellsJS was written
-  with ExCell in  mind.
+  with ExCell in mind.
 
   Tags are automatically closed when they are part of the
   [void elements](https://stackoverflow.com/questions/4693939/self-closing-tags-void-elements-in-html5)
   specification.
 
-  CellsJS are uses two predefined attributes to parse the Javascript. First it
+  CellsJS uses two predefined attributes to parse the Javascript. First it
   will look for the `data-cell` cell attribute and match it to the defined Cell
   in Javascript.
 
