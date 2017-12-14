@@ -79,6 +79,7 @@ defmodule ExCell.Base do
           "<div class=\\"AvatarCell\\" data-cell=\\"AvatarCell\\" data-cell-params=\\"{}\\">Hello</div>"
       """
       def container(do: content), do: container(%{}, [], [do: content])
+      def container(callback) when is_function(callback), do: container(%{}, [], callback)
 
       @doc """
       Returns the container of a cell as a Phoenix.Tag with options.
@@ -99,7 +100,7 @@ defmodule ExCell.Base do
           "<a class=\\"AvatarCell Moo\\" data-foo="bar" data-cell=\\"AvatarCell\\" data-cell-params=\\"{}\\">"
       """
       def container(options) when is_list(options), do: container(%{}, options, [do: nil])
-      def container(options, [do: content]) when is_list(options), do: container(%{}, options, [do: content])
+      def container(options, content) when is_list(options), do: container(%{}, options, content)
 
       @doc """
       Returns the container of a cell as a Phoenix.Tag with attributes added to
@@ -115,10 +116,12 @@ defmodule ExCell.Base do
         container(params, [], [do: nil])
       def container(%{} = params, [do: content]), do:
         container(params, [], [do: content])
+      def container(%{} = params, callback) when is_function(callback), do:
+        container(params, [], callback)
       def container(%{} = params, options) when is_list(options), do:
         container(params, options, [do: nil])
-      def container(%{} = params, options, [do: content]) when is_list(options), do:
-        ExCell.container(__MODULE__, UUID.uuid4(), params, options, [do: content])
+      def container(%{} = params, options, content), do:
+        ExCell.container(__MODULE__, UUID.uuid4(), params, options, content)
 
       defoverridable [class_name: 0, cell_name: 0, params: 0]
     end

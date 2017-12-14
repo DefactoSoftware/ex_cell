@@ -180,4 +180,41 @@ defmodule ExCell.Adapters.CellJSTest do
         == "<div class=\"MockCell\" data-cell=\"MockCell\" data-cell-id=\"id\" data-cell-params=\"{}\" data-foo=\"bar\"></div>"
     end
   end
+
+  describe "container/2" do
+    test "returns an element function" do
+      attributes = %{
+        name: "MockCell",
+        attributes: [
+          class: "MockCell",
+          data: [foo: "bar"]
+        ],
+        params: %{},
+        content: nil,
+        id: "id"
+      }
+
+      CellJS.container(attributes, fn %{element: element}->
+        {:safe, result} = element.("hello")
+
+        assert result == ~s(data-cell-id="id" data-cell-element="hello")
+      end)
+    end
+
+    test "uses the element function as content" do
+      attributes = %{
+        name: "MockCell",
+        attributes: [
+          class: "MockCell",
+          data: [foo: "bar"]
+        ],
+        params: %{},
+        content: nil,
+        id: "id"
+      }
+
+      assert safe_to_string(CellJS.container(attributes, fn %{} -> "test" end))
+        == "<div class=\"MockCell\" data-cell=\"MockCell\" data-cell-id=\"id\" data-cell-params=\"{}\" data-foo=\"bar\">test</div>"
+    end
+  end
 end

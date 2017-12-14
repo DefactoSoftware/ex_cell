@@ -58,6 +58,12 @@ defmodule ExCell do
     |> Enum.join(" ")
   end
 
+  def container(module, id, params, attributes, callback) when is_function(callback) do
+    module
+    |> options(id, params, attributes, nil)
+    |> module.__adapter__().container(callback)
+  end
+
   def container(module, id, params, attributes, [do: content]) do
     module
     |> options(id, params, attributes, content)

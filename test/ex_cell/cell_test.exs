@@ -4,6 +4,7 @@ defmodule ExCell.CellTest do
 
   defmodule MockAdapter do
     def container(options), do: options
+    def container(options, callback), do: Map.put(options, :content, callback.())
   end
 
   defmodule Foo.MockCell do
@@ -144,6 +145,18 @@ defmodule ExCell.CellTest do
         params: %{},
         id: _id
       } =  MockCell.container(%{}, foo: "bar")
+    end
+
+    test "with function" do
+      assert %{
+        name: "MockCell",
+        attributes: [
+          class: "MockCell"
+        ],
+        content: "Hello",
+        params: %{},
+        id: _id
+      } = MockCell.container(fn -> "Hello" end)
     end
   end
 end

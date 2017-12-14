@@ -18,6 +18,7 @@ defmodule ExCell.Adapters.CellJS do
 
   @behaviour ExCell.Adapter
 
+  alias Phoenix.HTML
   alias Phoenix.HTML.Tag
 
   def void_elements, do: [
@@ -47,7 +48,12 @@ defmodule ExCell.Adapters.CellJS do
   the default `data-cell` and `data-cell-params` attributes.
   """
   def data_attribute(name, id, data \\ [], params \\ %{}), do:
-    Keyword.merge(data, cell: name, cell_id: id, cell_params: Poison.encode!(params))
+    Keyword.merge(
+      data,
+      cell: name,
+      cell_id: id,
+      cell_params: Poison.encode!(params)
+    )
 
   @doc """
   The attributes function is used to auto fill the attributes for a container
@@ -80,5 +86,15 @@ defmodule ExCell.Adapters.CellJS do
       true -> Tag.tag(tag, attributes)
       false -> Tag.content_tag(tag, content, attributes)
     end
+  end
+
+  def container(%{id: id} = options, callback) do
+    options
+    |> Map.put(:content, callback.(%{element: &(element(id, &1))}))
+    |> container()
+  end
+
+  def element(id, element) do
+    HTML.raw(~s(data-cell-id="#{id}" data-cell-element="#{element}"))
   end
 end
