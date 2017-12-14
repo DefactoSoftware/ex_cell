@@ -58,15 +58,22 @@ defmodule ExCell do
     |> Enum.join(" ")
   end
 
-  def container(module, params, attributes, [do: content]) do
+  def container(module, id, params, attributes, callback) when is_function(callback) do
     module
-    |> options(params, attributes, content)
+    |> options(id, params, attributes, nil)
+    |> module.__adapter__().container(callback)
+  end
+
+  def container(module, id, params, attributes, [do: content]) do
+    module
+    |> options(id, params, attributes, content)
     |> module.__adapter__().container()
   end
 
-  def options(module, params, attributes, content) do
+  def options(module, id, params, attributes, content) do
     %{
       name: module.cell_name(),
+      id: id,
       params: module.params(params),
       attributes: Keyword.put(attributes, :class,
         class_name(module.class_name(), Keyword.get(attributes, :class))),

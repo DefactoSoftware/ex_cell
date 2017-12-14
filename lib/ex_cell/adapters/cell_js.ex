@@ -18,6 +18,7 @@ defmodule ExCell.Adapters.CellJS do
 
   @behaviour ExCell.Adapter
 
+  alias Phoenix.HTML
   alias Phoenix.HTML.Tag
 
   def void_elements, do: [
@@ -46,20 +47,23 @@ defmodule ExCell.Adapters.CellJS do
   The data_attribute function is used to build up the data attributes and set
   the default `data-cell` and `data-cell-params` attributes.
   """
-  def data_attribute(name, data \\ [], params \\ %{})
-  def data_attribute(name, nil, params), do: data_attribute(name, [], params)
-  def data_attribute(name, data, params) when is_list(data), do:
-    Keyword.merge(data, cell: name, cell_params: Poison.encode!(params))
+  def data_attribute(name, id, data \\ [], params \\ %{}), do:
+    Keyword.merge(
+      data,
+      cell: name,
+      cell_id: id,
+      cell_params: Poison.encode!(params)
+    )
 
   @doc """
   The attributes function is used to auto fill the attributes for a container
   with the data attributes.
   """
-  def attributes(name, attributes \\ [], params \\ %{}) do
+  def attributes(name, id, attributes \\ [], params \\ %{}) do
     Keyword.put(
       attributes,
       :data,
-      data_attribute(name, Keyword.get(attributes, :data), params)
+      data_attribute(name, id, Keyword.get(attributes, :data, []), params)
     )
   end
 
@@ -71,15 +75,26 @@ defmodule ExCell.Adapters.CellJS do
     name: name,
     attributes: attributes,
     params: params,
-    content: content
+    content: content,
+    id: id
   }) do
     {tag, attributes} = Keyword.pop(attributes, :tag, :div)
 
-    attributes = attributes(name, attributes, params)
+    attributes = attributes(name, id, attributes, params)
 
     case void_element?(tag) do
       true -> Tag.tag(tag, attributes)
       false -> Tag.content_tag(tag, content, attributes)
     end
+  end
+
+  def container(%{id: id} = options, callback) do
+    options
+    |> Map.put(:content, callback.(%{element: &(element(id, &1))}))
+    |> container()
+  end
+
+  def element(id, element) do
+    HTML.raw(~s(data-cell-id="#{id}" data-cell-element="#{element}"))
   end
 end

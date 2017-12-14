@@ -45,14 +45,15 @@ defmodule ExCell.Mixfile do
 
   defp deps do
     [
+      {:credo, "~> 0.8", only: [:dev, :test], runtime: false},
+      {:dialyxir, "~> 0.5", only: [:dev, :test]},
       {:ex_doc, ">= 0.0.0", only: [:dev, :test]},
       {:excoveralls, "~> 0.7", only: :test},
-      {:dialyxir, "~> 0.5", only: [:dev, :test]},
+      {:mix_test_watch, "~> 0.3", only: :dev, runtime: false},
       {:phoenix_html, "~> 2.10"},
       {:phoenix, "~> 1.3.0", optional: true},
       {:poison, "~> 3.1"},
-      {:mix_test_watch, "~> 0.3", only: :dev, runtime: false},
-      {:credo, "~> 0.8", only: [:dev, :test], runtime: false}
+      {:uuid, "~> 1.1"}
     ]
   end
 end
