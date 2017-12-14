@@ -82,42 +82,45 @@ defmodule ExCell.CellTest do
 
   describe "container/3" do
     test "without arguments" do
-      assert MockCell.container() == %{
+      assert %{
         name: "MockCell",
         attributes: [
           class: "MockCell"
         ],
         content: nil,
-        params: %{}
-      }
+        params: %{},
+        id: _id
+      } = MockCell.container()
     end
 
     test "with overrideables" do
-      assert MockCellWithOverridables.container() == %{
+      assert %{
         name: "World-MockCellWithOverridables",
         attributes: [
           class: "Bar-MockCellWithOverridables"
         ],
-        content: nil,
+        content: "TestContent",
         params: %{
           foo: "Bar"
-        }
-      }
+        },
+        id: _id
+      } = MockCellWithOverridables.container(%{}, [], [do: "TestContent"])
     end
 
     test "with content" do
-      assert MockCell.container(%{}, [], [do: "TestContent"]) == %{
+      assert %{
         name: "MockCell",
         attributes: [
           class: "MockCell"
         ],
         content: "TestContent",
-        params: %{}
-      }
+        params: %{},
+        id: _id
+      } = MockCell.container(%{}, [], [do: "TestContent"])
     end
 
     test "with cell params" do
-      assert MockCell.container(%{ foo: "bar" }) == %{
+      assert %{
         name: "MockCell",
         attributes: [
           class: "MockCell"
@@ -125,20 +128,22 @@ defmodule ExCell.CellTest do
         content: nil,
         params: %{
           foo: "bar"
-        }
-      }
+        },
+        id: _id
+      } = MockCell.container(%{ foo: "bar" })
     end
 
     test "with custom atttributes" do
-      assert MockCell.container(%{}, foo: "bar") == %{
+      assert %{
         name: "MockCell",
         attributes: [
           class: "MockCell",
           foo: "bar"
         ],
         content: nil,
-        params: %{}
-      }
+        params: %{},
+        id: _id
+      } =  MockCell.container(%{}, foo: "bar")
     end
   end
 end

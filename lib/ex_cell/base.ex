@@ -118,7 +118,7 @@ defmodule ExCell.Base do
       def container(%{} = params, options) when is_list(options), do:
         container(params, options, [do: nil])
       def container(%{} = params, options, [do: content]) when is_list(options), do:
-        ExCell.container(__MODULE__, params, options, [do: content])
+        ExCell.container(__MODULE__, UUID.uuid4(), params, options, [do: content])
 
       defoverridable [class_name: 0, cell_name: 0, params: 0]
     end
