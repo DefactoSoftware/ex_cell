@@ -197,7 +197,7 @@ defmodule ExCell.Adapters.CellJSTest do
       CellJS.container(attributes, fn %{element: element}->
         {:safe, result} = element.("hello")
 
-        assert result == ~s(data-cell-id="id" data-cell-element="hello")
+        assert result == ~s(data-cell-parent-id="id" data-cell-element="hello")
       end)
     end
 

@@ -95,6 +95,6 @@ defmodule ExCell.Adapters.CellJS do
   end
 
   def element(id, element) do
-    HTML.raw(~s(data-cell-id="#{id}" data-cell-element="#{element}"))
+    HTML.raw(~s(data-cell-parent-id="#{id}" data-cell-element="#{element}"))
   end
 end
