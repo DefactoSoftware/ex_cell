@@ -24,12 +24,13 @@ defmodule ExCell.Adapters.CellJSTest do
   end
 
   describe "data_attribute/3" do
-    test "it defaults" do
-      assert CellJS.data_attribute(nil, nil) == [cell: nil, cell_id: nil, cell_params: "{}"]
-    end
-
     test "it defaults data to a list" do
       assert CellJS.data_attribute(nil, nil) ==
+        [cell: nil, cell_id: nil, cell_params: "{}"]
+    end
+
+    test "it defaults nil data to a list" do
+      assert CellJS.data_attribute(nil, nil, nil) ==
         [cell: nil, cell_id: nil, cell_params: "{}"]
     end
 
