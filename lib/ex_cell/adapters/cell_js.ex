@@ -49,7 +49,7 @@ defmodule ExCell.Adapters.CellJS do
   """
   def data_attribute(name, id, data \\ [], params \\ %{}), do:
     Keyword.merge(
-      data,
+      data || [],
       cell: name,
       cell_id: id,
       cell_params: Poison.encode!(params)
