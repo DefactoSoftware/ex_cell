@@ -47,9 +47,12 @@ defmodule ExCell.Adapters.CellJS do
   The data_attribute function is used to build up the data attributes and set
   the default `data-cell` and `data-cell-params` attributes.
   """
-  def data_attribute(name, id, data \\ [], params \\ %{}), do:
+  def data_attribute(name, id, data \\ [], params \\ %{})
+  def data_attribute(name, id, nil, params), do:
+    data_attribute(name, id, [], params)
+  def data_attribute(name, id, data, params), do:
     Keyword.merge(
-      data || [],
+      data,
       cell: name,
       cell_id: id,
       cell_params: Poison.encode!(params)
