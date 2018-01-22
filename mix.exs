@@ -37,7 +37,7 @@ defmodule ExCell.Mixfile do
   defp package do
     [
       name: :ex_cell,
-      maintainers: ["Jesse Dijkstra"],
+      maintainers: ["Jesse Dijkstra", "Matthijs Kuiper", "Marcel Horlings"],
       licenses: ["MIT"],
       links: %{"GitHub" => "https://github.com/defactosoftware/ex_cell"}
     ]
