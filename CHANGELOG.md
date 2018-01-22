@@ -1,3 +1,7 @@
+# v0.0.11
+
+* Added fallback when `data: nil` to prevent errors (#39) (#40).
+
 # v0.0.10
 
 * Introduced an extra argument to the containers that creates a unique ID. The unique ID is used to create specific cell elements. The cell elements function can be used by passing a function instead of content that contains a map with a `element` function (#35) (#36).

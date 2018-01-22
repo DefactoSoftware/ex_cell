@@ -3,14 +3,14 @@
 
 # ex_cell
 
-A module for creating coupled modules of CSS, Javascript and Views in Phoenix
+A module for creating coupled modules of CSS, Javascript and Views in Phoenix.
 
 ## Installation
 
-Add the following to the dependencies in `mix.exs`
+Add the following to the dependencies in `mix.exs`:
 
 ```ex
-{:ex_cell, "~> 0.0.10"}
+{:ex_cell, "~> 0.0.11"}
 ```
 
 In Phoenix 1.3.0+ add the following to `lib/app_web/web.ex`:
