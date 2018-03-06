@@ -113,7 +113,7 @@ A cell consists of a couple of files:
 cells
 |- avatar
 |  |- template.html.eex
-|  |- view.html.eex
+|  |- view.ex
 |  |- style.css (optional)
 |  |- index.js (optional)
 |- header
