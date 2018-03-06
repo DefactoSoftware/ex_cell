@@ -42,7 +42,7 @@ def cell(opts \\ []) do
                      adapter: ExCell.Adapters.CellJS
 
     use Phoenix.View, root: "lib/app_web/cells",
-                      path: ExCell.View.relative_path(__MODULE__AppWeb)
+                      path: ExCell.View.relative_path(__MODULE__, AppWeb)
 
     import Phoenix.Controller,
            only: [get_csrf_token: 0, get_flash: 2, view_module: 1]
@@ -98,7 +98,7 @@ javascripts: {
     "js/vendor.js": /^node_modules/,
     "js/app.js": [
       "assets/js/**/*.js",
-      "lib/detroit_web/cells/**/*.js"
+      "lib/app_web/cells/**/*.js"
     ]
   }
 }
@@ -113,7 +113,7 @@ A cell consists of a couple of files:
 cells
 |- avatar
 |  |- template.html.eex
-|  |- view.html.eex
+|  |- view.ex
 |  |- style.css (optional)
 |  |- index.js (optional)
 |- header
