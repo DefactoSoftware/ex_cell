@@ -42,7 +42,7 @@ defmodule ExCell.View do
       iex(0)> safe_to_string(AppWeb.AvatarView.cell(AvatarCell, do: "Foo"))
       "<div class=\"AvatarCell\" ...>Foo</div>"
   """
-  def cell(cell, [do: children]) do
+  def cell(cell, do: children) do
     render_cell(cell, children: children)
   end
 
@@ -67,9 +67,11 @@ defmodule ExCell.View do
   def cell(cell, children) do
     render_cell(cell, children: children)
   end
-  def cell(cell, assigns, [do: children]) when is_list(assigns) do
+
+  def cell(cell, assigns, do: children) when is_list(assigns) do
     render_cell(cell, [children: children] ++ assigns)
   end
+
   def cell(cell, children, assigns) when is_list(assigns) do
     render_cell(cell, [children: children] ++ assigns)
   end
@@ -84,13 +86,16 @@ defmodule ExCell.View do
   def cell_to_string(cell) do
     render_cell_to_string(cell, [])
   end
-  def cell_to_string(cell, [do: children]) do
+
+  def cell_to_string(cell, do: children) do
     render_cell_to_string(cell, children: children)
   end
+
   def cell_to_string(cell, assigns) do
     render_cell_to_string(cell, assigns)
   end
-  def cell_to_string(cell, assigns, [do: children]) do
+
+  def cell_to_string(cell, assigns, do: children) do
     render_cell_to_string(cell, [children: children] ++ assigns)
   end
 
