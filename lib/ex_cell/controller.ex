@@ -34,6 +34,8 @@ defmodule ExCell.Controller do
   end
 
   def cell(%{} = conn, cell, assigns) do
-    @controller_adapter.render(conn, cell, "template.html", assigns)
+    conn
+    |> @controller_adapter.put_view(cell)
+    |> @controller_adapter.render("template.html", assigns)
   end
 end
