@@ -1,3 +1,8 @@
+# v0.0.12
+
+* Use Phoenix.Controller.put_view to address the view that's shown since
+  render/4 is being depricated in 1.4 (#44)
+
 # v0.0.11
 
 * Added fallback when `data: nil` to prevent errors (#39) (#40).

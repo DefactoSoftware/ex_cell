@@ -1,22 +1,24 @@
 defmodule ExCell.Mixfile do
   use Mix.Project
 
-  @version "0.0.11"
+  @version "0.0.12"
 
   def project do
-    [app: :ex_cell,
-     name: "ExCell",
-     source_url: "https://github.com/defactosoftware/ex_cell",
-     version: @version,
-     elixir: "~> 1.2",
-     elixirc_paths: elixirc_paths(Mix.env),
-     build_per_environment: false,
-     description: description(),
-     package: package(),
-     deps: deps(),
-     test_coverage: [tool: ExCoveralls],
-     preferred_cli_env: [coveralls: :test, "coveralls.detail": :test],
-     dialyzer: [plt_add_deps: true]]
+    [
+      app: :ex_cell,
+      name: "ExCell",
+      source_url: "https://github.com/defactosoftware/ex_cell",
+      version: @version,
+      elixir: "~> 1.2",
+      elixirc_paths: elixirc_paths(Mix.env()),
+      build_per_environment: false,
+      description: description(),
+      package: package(),
+      deps: deps(),
+      test_coverage: [tool: ExCoveralls],
+      preferred_cli_env: [coveralls: :test, "coveralls.detail": :test],
+      dialyzer: [plt_add_deps: true]
+    ]
   end
 
   def application do
@@ -24,10 +26,10 @@ defmodule ExCell.Mixfile do
   end
 
   defp description do
-  """
-  A module for creating coupled modules of CSS, Javascript and Views in
-  Phoenix.
-  """
+    """
+    A module for creating coupled modules of CSS, Javascript and Views in
+    Phoenix.
+    """
   end
 
   defp elixirc_paths(:test), do: ["lib", "test/support"]
