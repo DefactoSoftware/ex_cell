@@ -81,15 +81,14 @@ stylesheets: {
 ...
 ```
 
-If you use something other than `brunch` to manage your assets, you need to add
-the files to the assets manager of choice.
+If you use something other than [Brunch](https://brunch.io) to manage your assets,
+you need to add the files to the assets manager of choice.
 
 ## Javascript
 
-If you wish to use the accompanying `cell-js` library you can install
-[cell-js](https://github.com/DefactoSoftware/cells-js) with your package
-manager. After you installed the Javascript package, add the following to your
-`brunch-config.js`:
+If you wish to use the accompanying [cell-js](https://github.com/DefactoSoftware/cell-js)
+library you can install it with your package manager. After you installed the
+Javascript package, add the following to your `brunch-config.js`:
 
 ```js
 ...
@@ -131,7 +130,7 @@ This would generate the following HTML when you render the cell:
 
 ```html
 <span class="AvatarCell" data-cell="AvatarCell" data-cell-params="{}">
-  <img src="/images/foo/avatar.jpg" class="AvatarCell-Image" alt="foo" />
+  <img src="/images/foo/avatar.jpg" class="AvatarCell-Image" alt="foo">
 </span>
 ```
 
@@ -139,7 +138,7 @@ This would generate the following HTML when you render the cell:
 
 Views of cells behave like normal views in Phoenix, except that they have
 provide a container method that can be used in a template to render the
-appropiate HTML needed to initialize the Javascript for a cell and have a
+appropriate HTML needed to initialize the Javascript for a cell and have a
 predefined class that is the same as the cell name minus the namespace.
 
 ```ex
@@ -172,7 +171,7 @@ end
 ### template.html.eex
 
 The template behave like any other template in Phoenix except that they have
-access to a container method to render the appropiate cell HTML container:
+access to a container method to render the appropriate cell HTML container:
 
 ```eex
 <!-- lib/app_web/cell/avatar/template.html.eex -->
@@ -187,8 +186,8 @@ access to a container method to render the appropiate cell HTML container:
 
 This can be any type of CSS file that you wish (preprocessed or other wise).
 Because cells provides methods to namespace your CSS you are advised to use a
-similar namespace or use something like `postcss-modules` to ensure all classses
-defined are unique.
+similar namespace or use something like [postcss-modules](https://github.com/css-modules/postcss-modules)
+to ensure all classes defined are unique.
 
 ```css
 .AvatarCell {
@@ -205,8 +204,8 @@ defined are unique.
 
 ### index.js
 
-If you use `cells-js` you can create Javascript that is tightly coupled to the
-cell.
+If you use [cell-js](https://github.com/DefactoSoftware/cell-js) you can create
+Javascript that is tightly coupled to the cell:
 
 ```js
 import { Cell, Builder } from "cells-js";
