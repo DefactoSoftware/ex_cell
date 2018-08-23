@@ -6,7 +6,7 @@ jobs:
   build:
     working_directory: ~/repo
     docker:
-      - image: defactosoftware/elixir:1.5
+      - image: defactosoftware/elixir
         environment:
           MIX_ENV: test
     steps:
