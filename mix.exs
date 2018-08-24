@@ -27,8 +27,7 @@ defmodule ExCell.Mixfile do
 
   defp description do
     """
-    A module for creating coupled modules of CSS, Javascript and Views in
-    Phoenix.
+    A module for creating coupled modules of CSS, Javascript and Views in Phoenix.
     """
   end
 
@@ -47,7 +46,7 @@ defmodule ExCell.Mixfile do
 
   defp deps do
     [
-      {:credo, "~> 0.8", only: [:dev, :test], runtime: false},
+      {:credo, "~> 0.10", only: [:dev, :test], runtime: false},
       {:dialyxir, "~> 0.5", only: [:dev, :test]},
       {:ex_doc, ">= 0.0.0", only: [:dev, :test]},
       {:excoveralls, "~> 0.7", only: :test},
