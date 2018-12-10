@@ -52,7 +52,7 @@ defmodule ExCell.Mixfile do
       {:excoveralls, "~> 0.7", only: :test},
       {:mix_test_watch, "~> 0.3", only: :dev, runtime: false},
       {:phoenix_html, "~> 2.10"},
-      {:phoenix, "~> 1.3.0", optional: true},
+      {:phoenix, "~> 1.4.0", optional: true},
       {:poison, "~> 3.1"},
       {:uuid, "~> 1.1"}
     ]
