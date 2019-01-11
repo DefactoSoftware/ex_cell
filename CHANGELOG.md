@@ -1,3 +1,7 @@
+# v0.0.14
+
+- Use `Jason` instead of `Poison`.
+
 # v0.0.13
 
 - Update dependencies.

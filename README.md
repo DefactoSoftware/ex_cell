@@ -10,7 +10,7 @@ A module for creating coupled modules of CSS, Javascript and Views in Phoenix.
 Add the following to the dependencies in `mix.exs`:
 
 ```ex
-{:ex_cell, "~> 0.0.13"}
+{:ex_cell, "~> 0.0.14"}
 ```
 
 In Phoenix 1.3.0+ add the following to `lib/app_web/web.ex`:
