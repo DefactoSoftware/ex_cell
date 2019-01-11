@@ -10,7 +10,7 @@ A module for creating coupled modules of CSS, Javascript and Views in Phoenix.
 Add the following to the dependencies in `mix.exs`:
 
 ```ex
-{:ex_cell, "~> 0.0.12"}
+{:ex_cell, "~> 0.0.13"}
 ```
 
 In Phoenix 1.3.0+ add the following to `lib/app_web/web.ex`:
@@ -130,7 +130,7 @@ This would generate the following HTML when you render the cell:
 
 ```html
 <span class="AvatarCell" data-cell="AvatarCell" data-cell-params="{}">
-  <img src="/images/foo/avatar.jpg" class="AvatarCell-Image" alt="foo">
+  <img src="/images/foo/avatar.jpg" class="AvatarCell-Image" alt="foo" />
 </span>
 ```
 
