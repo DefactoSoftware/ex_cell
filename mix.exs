@@ -54,7 +54,7 @@ defmodule ExCell.Mixfile do
       {:phoenix_html, "~> 2.10"},
       {:phoenix, "~> 1.4.0", optional: true},
       {:poison, "~> 4.0"},
-      {:uuid, "~> 1.1"}
+      {:elixir_uuid, "~> 1.2"}
     ]
   end
 end
