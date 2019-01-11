@@ -48,15 +48,16 @@ defmodule ExCell.Adapters.CellJS do
   the default `data-cell` and `data-cell-params` attributes.
   """
   def data_attribute(name, id, data \\ [], params \\ %{})
-  def data_attribute(name, id, nil, params), do:
-    data_attribute(name, id, [], params)
-  def data_attribute(name, id, data, params), do:
-    Keyword.merge(
-      data,
-      cell: name,
-      cell_id: id,
-      cell_params: Poison.encode!(params)
-    )
+  def data_attribute(name, id, nil, params), do: data_attribute(name, id, [], params)
+
+  def data_attribute(name, id, data, params),
+    do:
+      Keyword.merge(
+        data,
+        cell: name,
+        cell_id: id,
+        cell_params: Jason.encode!(params)
+      )
 
   @doc """
   The attributes function is used to auto fill the attributes for a container
