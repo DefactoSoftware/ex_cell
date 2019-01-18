@@ -190,10 +190,11 @@ similar namespace or use something like [postcss-modules](https://github.com/css
 to ensure all classes defined are unique.
 
 ```css
+/* lib/app_web/cell/avatar/style.css */
 .AvatarCell {
   border-radius: 50%;
-  width: 50px;
   height: 50px;
+  width: 50px;
 }
 
 .AvatarCell-image {
@@ -208,6 +209,7 @@ If you use [cell-js](https://github.com/DefactoSoftware/cell-js) you can create
 Javascript that is tightly coupled to the cell:
 
 ```js
+// lib/app_web/cell/avatar/index.js
 import { Cell, Builder } from "cells-js";
 
 class AvatarCell extends Cell {
@@ -222,3 +224,18 @@ Builder.register(AvatarCell, "AvatarCell");
 
 export default AvatarCell;
 ```
+
+## Nested cells
+
+For nested cells (e.g. `AppWeb.User.AvatarCell`) make sure you include the
+namespace in the stylesheet/javascript.
+
+```css
+.User-AvatarCell {}
+```
+
+```js
+Builder.register(AvatarCell, "User-AvatarCell");
+```
+
+When in doubt, the cell name corresponds to the `data-cell` attribute on the DOM element.
