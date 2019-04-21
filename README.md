@@ -258,7 +258,7 @@ const importAll = function(r) {
 
 importAll(require.context("../../../lib/YOUR_DIRECTORY/cells", true, /\.js$/))
 
-import Builder from "@vendor/cell/builder"
+import Builder from "@vendor/cell/builder" // <-- @vendor is an alias from webpack.config.js, take a look below.
 ...
 ```
 
@@ -281,7 +281,7 @@ import Builder from "@vendor/cell/builder"
 ...
 ```
 
-#### 3. Create the index.js file in the target cell and use the aliases to import the library.
+#### 3. Also works fine with [cell-js](https://github.com/DefactoSoftware/cell-js) plugin. Just create the index.js file in the target cell and use the aliases to import the library.
 
 #### E.g. calendar:
 
