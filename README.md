@@ -209,8 +209,8 @@ If you use [cell-js](https://github.com/DefactoSoftware/cell-js) you can create
 Javascript that is tightly coupled to the cell:
 
 ```js
-// lib/app_web/cell/avatar/index.js
-import { Cell, Builder } from "cells-js";
+// lib/app_web/cells/avatar/index.js
+import { Cell, Builder } from "@defacto/cell-js";
 
 class AvatarCell extends Cell {
   initialize() {
