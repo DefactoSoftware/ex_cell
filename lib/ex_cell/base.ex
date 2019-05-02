@@ -4,6 +4,7 @@ defmodule ExCell.Base do
   defmacro __using__(opts \\ []) do
     quote do
       import ExCell.View
+      import ExCell.LiveView
 
       @adapter unquote(opts[:adapter])
       @namespace unquote(opts[:namespace])
