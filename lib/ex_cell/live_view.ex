@@ -2,7 +2,7 @@ defmodule ExCell.LiveView do
   @moduledoc """
   Cell helpers used to render the live view cells in both Views and Cells
   """
-  @view_adapter ExCell.config(:view_adapter, Phoenix.LiveView)
+  @view_adapter ExCell.config(:view_adapter, Phoenix.LiveView.Helpers)
 
   @doc """
     Renders a cell in the view.
@@ -58,6 +58,7 @@ defmodule ExCell.LiveView do
 
   defp render_cell(cell, conn_or_socket, assigns) do
     assigns = Map.new(assigns)
-    @view_adapter.live_render(conn_or_socket, cell, session: %{assigns: assigns})
+
+    @view_adapter.live_render(conn_or_socket, cell, session: %{"assigns" => assigns})
   end
 end
