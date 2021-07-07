@@ -84,6 +84,7 @@ stylesheets: {
 If you use something other than [Brunch](https://brunch.io) to manage your assets,
 you need to add the files to the assets manager of choice.
 
+
 ## Javascript
 
 If you wish to use the accompanying [cell-js](https://github.com/DefactoSoftware/cell-js)
@@ -239,3 +240,66 @@ Builder.register(AvatarCell, "User-AvatarCell");
 ```
 
 When in doubt, the cell name corresponds to the `data-cell` attribute on the DOM element.
+
+
+## Webpack configuration
+
+If you use webpack, you can easily configure it.
+
+#### 1. Import the context of the folder in which you have cells. Next import the library into app.js, which is a webpack input file:
+
+```js
+// assets/src/js/app.js
+
+...
+const importAll = function(r) {
+  r.keys().forEach(r)
+}
+
+importAll(require.context("../../../lib/YOUR_DIRECTORY/cells", true, /\.js$/))
+
+import Builder from "@vendor/cell/builder" // <-- @vendor is an alias from webpack.config.js, take a look below.
+...
+```
+
+#### 2. Create aliases in the webpack configuration file:
+
+```js
+// assets/webpack.config.js
+
+...
+  resolve: {
+    symlinks: false,
+    modules: ["node_modules"],
+    alias: {
+      "@": path.resolve(__dirname, "./src/js"),
+      "@cells": path.resolve(__dirname, "../lib/YOUR_DIRECTORY/cells"),
+      "@vendor": path.resolve(__dirname, "./vendor"),
+      "@libs": path.resolve(__dirname, "./node_modules")
+    }
+  },
+...
+```
+
+#### 3. Also works fine with [cell-js](https://github.com/DefactoSoftware/cell-js) plugin. Just create the index.js file in the target cell and use the aliases to import the library.
+
+#### E.g. calendar:
+
+```js
+// cells/calendar/index.js
+
+...
+import Cell  from "@vendor/cell/cell"
+import Builder from "@vendor/cell/builder"
+import moment from "@libs/moment" // <-- JS library
+
+class CalendarCell extends Cell {
+  initialize() {}
+}
+
+Builder.register(CalendarCell, "CalendarCell")
+
+export default CalendarCell
+
+...
+```
