@@ -25,15 +25,15 @@ defmodule ExCell.Controller do
     cell(cell, [])
   end
 
-  def cell(%{} = conn, cell) do
-    cell(conn, cell, [])
+  def cell(%Plug.Conn{assigns: assigns} = conn, cell) do
+    cell(conn, cell, Map.to_list(assigns))
   end
 
   def cell(cell, assigns) do
     View.cell(cell, assigns)
   end
 
-  def cell(%{} = conn, cell, assigns) do
+  def cell(%Plug.Conn{} = conn, cell, assigns) do
     assigns
     |> Enum.reduce(conn, fn {key, value}, conn -> Plug.Conn.assign(conn, key, value) end)
     |> @controller_adapter.put_view(cell)

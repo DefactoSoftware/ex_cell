@@ -8,8 +8,8 @@ defmodule ExCell.ControllerTest do
   end
 
   test "cell/2 with controller" do
-    assert Controller.cell(%{private: %{}}, :mock_cell) === [
-             %{private: %{phoenix_view: :mock_cell}},
+    assert Controller.cell(%Plug.Conn{private: %{}}, :mock_cell) === [
+             %Plug.Conn{private: %{phoenix_view: :mock_cell}},
              "template.html",
              []
            ]
@@ -20,8 +20,8 @@ defmodule ExCell.ControllerTest do
   end
 
   test "cell/3 with controller and arguments" do
-    assert Controller.cell(%{private: %{}}, :mock_cell, []) === [
-             %{private: %{phoenix_view: :mock_cell}},
+    assert Controller.cell(%Plug.Conn{private: %{}}, :mock_cell, []) === [
+             %Plug.Conn{private: %{phoenix_view: :mock_cell}},
              "template.html",
              []
            ]
