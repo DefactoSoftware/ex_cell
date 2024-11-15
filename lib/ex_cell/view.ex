@@ -25,45 +25,28 @@ defmodule ExCell.View do
   end
 
   @doc """
-    Renders a cell in the view.
-
-    ### Examples
-        iex(0)> safe_to_string(AppWeb.AvatarView.cell(AvatarCell))
-        "<div class=\"AvatarCell\" ...>"
-  """
-  def cell(cell) do
-    render_cell(cell, [])
-  end
-
-  @doc """
-  Renders a cell in the view with children.
+  Renders a cell in the view.
 
   ### Examples
-      iex(0)> safe_to_string(AppWeb.AvatarView.cell(AvatarCell, do: "Foo"))
+
+      iex(0)> safe_to_string(AppWeb.AvatarView.cell(AvatarCell))
+      "<div class=\"AvatarCell\" ...>"
+
+      iex(1)> safe_to_string(AppWeb.AvatarView.cell(AvatarCell, do: "Foo"))
       "<div class=\"AvatarCell\" ...>Foo</div>"
-  """
-  def cell(cell, do: children) do
-    render_cell(cell, children: children)
-  end
 
-  @doc """
-  Renders a cell in the view with assigns.
-
-  ### Examples
-      iex(0)> safe_to_string(AppWeb.AvatarView.cell(AvatarCell, user: %User{name: "Bar"}))
+      iex(2)> safe_to_string(AppWeb.AvatarView.cell(AvatarCell, user: %User{name: "Bar"}))
       "<div class=\"AvatarCell\" ...>Bar</div>"
-  """
-  def cell(cell, assigns) when is_list(assigns) do
-    render_cell(cell, assigns)
-  end
 
-  @doc """
-  Renders a cell in the view with children without a block.
-
-  ### Examples
-      iex(0)> safe_to_string(AppWeb.AvatarView.cell(AvatarCell, "Hello"))
+      iex(3)> safe_to_string(AppWeb.AvatarView.cell(AvatarCell, "Hello"))
       "<div class=\"AvatarCell\" ...>Hello</div>"
   """
+  def cell(cell), do: render_cell(cell, [])
+
+  def cell(cell, do: children), do: render_cell(cell, children: children)
+
+  def cell(cell, assigns) when is_list(assigns), do: render_cell(cell, assigns)
+
   def cell(cell, children) do
     render_cell(cell, children: children)
   end
@@ -80,20 +63,21 @@ defmodule ExCell.View do
   Renders the cell directly as a string, used for testing purposes.
 
   ### Examples
+
       iex(0)> AppWeb.AvatarView.cell_to_string(AvatarCell)
       "<div class=\"AvatarCell\" ...>"
+
+      iex(1)> AppWeb.AvatarView.cell_to_string(AvatarCell, do: "Foo")
+      "<div class=\"AvatarCell\" ...>Foo</div>"
+
+      iex(2)> AppWeb.AvatarView.cell_to_string(AvatarCell, user: %User{name: "Bar"})
+      "<div class=\"AvatarCell\" ...>Bar</div>"
   """
-  def cell_to_string(cell) do
-    render_cell_to_string(cell, [])
-  end
+  def cell_to_string(cell), do: render_cell_to_string(cell, [])
 
-  def cell_to_string(cell, do: children) do
-    render_cell_to_string(cell, children: children)
-  end
+  def cell_to_string(cell, do: children), do: render_cell_to_string(cell, children: children)
 
-  def cell_to_string(cell, assigns) do
-    render_cell_to_string(cell, assigns)
-  end
+  def cell_to_string(cell, assigns), do: render_cell_to_string(cell, assigns)
 
   def cell_to_string(cell, assigns, do: children) do
     render_cell_to_string(cell, [children: children] ++ assigns)

@@ -1,5 +1,6 @@
-use Mix.Config
+import Config
 
-config :ex_cell, ExCell, view_adapter: ExCell.MockViewAdapter,
-                         controller_adapter: ExCell.MockControllerAdapter,
-                         foo: :bar
+config :ex_cell, ExCell,
+  view_adapter: ExCell.MockViewAdapter,
+  controller_adapter: ExCell.MockControllerAdapter,
+  foo: :bar
