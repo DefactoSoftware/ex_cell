@@ -9,7 +9,7 @@ defmodule ExCell.Mixfile do
       name: "ExCell",
       source_url: "https://github.com/defactosoftware/ex_cell",
       version: @version,
-      elixir: "~> 1.2",
+      elixir: "~> 1.6",
       elixirc_paths: elixirc_paths(Mix.env()),
       build_per_environment: false,
       description: description(),
