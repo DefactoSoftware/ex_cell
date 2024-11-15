@@ -1,7 +1,7 @@
 defmodule ExCell.Mixfile do
   use Mix.Project
 
-  @version "0.0.15"
+  @version "0.1.0"
 
   def project do
     [
