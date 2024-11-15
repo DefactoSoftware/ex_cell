@@ -57,8 +57,24 @@ defmodule ExCell.View do
     render_cell(cell, children: children)
   end
 
+  def cell(cell, %Plug.Conn{assigns: assigns} = conn, do: children) when is_map(assigns),
+    do:
+      render_cell(cell,
+        assigns
+        |> Map.put(:conn, conn)
+        |> Map.put(:children, children)
+        |> Map.to_list())
+
   def cell(cell, assigns, do: children) when is_list(assigns) do
     render_cell(cell, [children: children] ++ assigns)
+  end
+
+  def cell(cell, children, %Plug.Conn{assigns: assigns} = conn) when is_map(assigns) do
+    render_cell(cell,
+      assigns
+      |> Map.put(:conn, conn)
+      |> Map.put(:children, children)
+      |> Map.to_list())
   end
 
   def cell(cell, children, assigns) when is_list(assigns) do
