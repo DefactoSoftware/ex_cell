@@ -18,11 +18,13 @@ defmodule ExCell.ViewTest do
            ]
   end
 
-  test "cell/2 with a conn instead of assigns" do
-    assert View.cell(:mock_cell, %Plug.Conn{assigns: %{foo: "bar"}}) === [
+  test "cell/2 with a conn will make the conn part of the assigns as well as the assigns of the conn" do
+    conn = %Plug.Conn{assigns: %{foo: "bar"}}
+
+    assert View.cell(:mock_cell, conn) === [
              :mock_cell,
              "template.html",
-             [foo: "bar"]
+             [foo: "bar", conn: conn]
            ]
   end
 
