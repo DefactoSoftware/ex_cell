@@ -11,43 +11,51 @@ defmodule ExCell.ViewTest do
   end
 
   test "cell/2 with assigns" do
-    assert View.cell(:mock_cell, [foo: "bar"]) === [
-      :mock_cell,
-      "template.html",
-      [foo: "bar"]
-    ]
+    assert View.cell(:mock_cell, foo: "bar") === [
+             :mock_cell,
+             "template.html",
+             [foo: "bar"]
+           ]
+  end
+
+  test "cell/2 with a conn instead of assigns" do
+    assert View.cell(:mock_cell, %Plug.Conn{assigns: %{foo: "bar"}}) === [
+             :mock_cell,
+             "template.html",
+             [foo: "bar"]
+           ]
   end
 
   test "cell/2 with do block" do
-    assert View.cell(:mock_cell, [do: "yes"]) === [
-      :mock_cell,
-      "template.html",
-      [children: "yes"]
-    ]
+    assert View.cell(:mock_cell, do: "yes") === [
+             :mock_cell,
+             "template.html",
+             [children: "yes"]
+           ]
   end
 
   test "cell/2 with children" do
     assert View.cell(:mock_cell, "yes") === [
-      :mock_cell,
-      "template.html",
-      [children: "yes"]
-    ]
+             :mock_cell,
+             "template.html",
+             [children: "yes"]
+           ]
   end
 
   test "cell/2 with assign and do block" do
-    assert View.cell(:mock_cell, [foo: "bar"], [do: "yes"]) === [
-      :mock_cell,
-      "template.html",
-      [children: "yes", foo: "bar"]
-    ]
+    assert View.cell(:mock_cell, [foo: "bar"], do: "yes") === [
+             :mock_cell,
+             "template.html",
+             [children: "yes", foo: "bar"]
+           ]
   end
 
   test "cell/2 with children and assign" do
     assert View.cell(:mock_cell, "yes", foo: "bar") === [
-      :mock_cell,
-      "template.html",
-      [children: "yes", foo: "bar"]
-    ]
+             :mock_cell,
+             "template.html",
+             [children: "yes", foo: "bar"]
+           ]
   end
 
   test "cell_to_string/1 with ExCell" do
@@ -56,25 +64,25 @@ defmodule ExCell.ViewTest do
 
   test "cell_to_string/2 with assigns" do
     assert View.cell_to_string(:mock_cell, foo: "bar") === [
-      :mock_cell,
-      "template.html",
-      [foo: "bar"]
-    ]
+             :mock_cell,
+             "template.html",
+             [foo: "bar"]
+           ]
   end
 
   test "cell_to_string/2 with do block" do
-    assert View.cell_to_string(:mock_cell, [do: "yes"]) === [
-      :mock_cell,
-      "template.html",
-      [children: "yes"]
-    ]
+    assert View.cell_to_string(:mock_cell, do: "yes") === [
+             :mock_cell,
+             "template.html",
+             [children: "yes"]
+           ]
   end
 
   test "cell_to_string/2 with assign and do block" do
-    assert View.cell_to_string(:mock_cell, [foo: "bar"], [do: "yes"]) === [
-      :mock_cell,
-      "template.html",
-      [children: "yes", foo: "bar"]
-    ]
+    assert View.cell_to_string(:mock_cell, [foo: "bar"], do: "yes") === [
+             :mock_cell,
+             "template.html",
+             [children: "yes", foo: "bar"]
+           ]
   end
 end

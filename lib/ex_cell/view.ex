@@ -38,12 +38,18 @@ defmodule ExCell.View do
       iex(2)> safe_to_string(AppWeb.AvatarView.cell(AvatarCell, user: %User{name: "Bar"}))
       "<div class=\"AvatarCell\" ...>Bar</div>"
 
-      iex(3)> safe_to_string(AppWeb.AvatarView.cell(AvatarCell, "Hello"))
+      iex(3)> safe_to_string(AppWeb.AvatarView.cell(AvatarCell, %Plug.Conn{} |> assign(:user, %User{name: "Bar"})))
+      "<div class=\"AvatarCell\" ...>Bar</div>"
+
+      iex(4)> safe_to_string(AppWeb.AvatarView.cell(AvatarCell, "Hello"))
       "<div class=\"AvatarCell\" ...>Hello</div>"
   """
   def cell(cell), do: render_cell(cell, [])
 
   def cell(cell, do: children), do: render_cell(cell, children: children)
+
+  def cell(cell, %Plug.Conn{assigns: assigns}) when is_map(assigns),
+    do: render_cell(cell, Map.to_list(assigns))
 
   def cell(cell, assigns) when is_list(assigns), do: render_cell(cell, assigns)
 
