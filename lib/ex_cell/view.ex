@@ -48,8 +48,8 @@ defmodule ExCell.View do
 
   def cell(cell, do: children), do: render_cell(cell, children: children)
 
-  def cell(cell, %Plug.Conn{assigns: assigns}) when is_map(assigns),
-    do: render_cell(cell, Map.to_list(assigns))
+  def cell(cell, %Plug.Conn{assigns: assigns} = conn) when is_map(assigns),
+    do: render_cell(cell, Map.to_list(Map.put(assigns, :conn, conn)))
 
   def cell(cell, assigns) when is_list(assigns), do: render_cell(cell, assigns)
 
